@@ -58,7 +58,10 @@ class Liste implements ListInterface
 				$this->insert($k, $v);
 			}
 		}
+            else
+            {
 		$this->list = $array;
+            }
 	}
 	
 	/**

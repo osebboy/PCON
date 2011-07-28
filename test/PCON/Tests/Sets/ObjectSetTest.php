@@ -16,7 +16,10 @@
  */
 namespace PCON\Tests\Sets;
 
+require_once '_files/Object.php';
+
 use PCON\Sets\ObjectSet;
+use PCON\Sets\Object;
 
 /**
  * Objset Set Test
@@ -46,6 +49,19 @@ class ObjectSetTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(1, $this->set->size());
 	}
 	
+	public function testBuildWithDataIntegrity()
+	{
+		$this->set->setDataIntegrity(true);
+		
+		$array = array(new Object(), new Object());
+		$this->set->build($array);
+		$this->assertEquals(2, $this->set->size());
+		
+		// build should remove all previous objects in th container
+		$this->set->build(array(new Object()));
+		$this->assertEquals(1, $this->set->size());
+	}
+	
 	public function testClear()
 	{
 		$array = array(new \stdClass(), new \stdClass());
@@ -62,10 +78,42 @@ class ObjectSetTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(1, $this->set->size());
 	}
 	
+	public function testInsertWithDataIntegrity()
+	{
+		$this->set->setDataIntegrity(true);
+		
+		$obj1 = new Object();
+		$this->set->insert($obj1);
+		$this->assertEquals(1, $this->set->size());
+	}
+	
+	public function testInsertWithDataIntegrityAndSubclasses()
+	{
+		require_once '_files/User.php';
+		require_once '_files/UserSet.php';
+		
+		$set = new \Dummy\UserSet;
+		$set->setDataIntegrity(true);
+		
+		$obj1 = new \Dummy\User();
+		$set->insert($obj1);
+		$this->assertEquals(1, $set->size());
+	}
+	
 	public function testInsertShouldThrowNoticeIfNotObject()
 	{
 		$this->setExpectedException('PHPUnit_framework_error');
 		$this->set->insert('string');
+	}
+	
+	public function testInsertShouldThrowNoticeIfDataIntegrityFailes()
+	{
+		$this->set->setDataIntegrity(true);
+		
+		$obj1 = new \stdClass();
+		
+		$this->setExpectedException('PHPUnit_framework_error');
+		$this->set->insert($obj1);
 	}
 	
 	public function testInsertShouldNotAddTheSameObjectSecondTime()

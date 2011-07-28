@@ -27,6 +27,40 @@ use Closure, SplFixedArray;
  */
 class ObjectSet implements SetInterface
 {
+	protected $_checkIntegrity;
+	
+	/**
+	 *
+	 * @param boolean $checkIntegrity
+	 * @see ObjectSet::setDataIntegrity()
+	 */
+	public function __construct($checkIntegrity = false)
+	{
+		$this->_checkIntegrity = $checkIntegrity;
+	}
+	
+	/**
+	 * If  true, every new inserted item is checked for data integrity . The item has to be an instance of the called
+	 * ObjectSet without the string part 'Set'.
+	 * 
+     * <code>
+     * $dataArray = array(
+	 *     new Model\User('Peter'),
+	 *     new Model\User('Helene')
+	 * );
+	 * 
+	 * $userSet = new Model\UserSet();
+	 * $userSet->setDataIntegrity(true);
+	 * 
+	 * $userSet->build($dataArray);
+     * </code>
+	 * @param booleand $checkIntegrity True to enable data integrity
+	 */
+	public function setDataIntegrity($checkIntegrity)
+	{
+		$this->_checkIntegrity = $checkIntegrity;
+	}
+		
 	/**
 	 * Object set container.
 	 * 
@@ -127,6 +161,18 @@ class ObjectSet implements SetInterface
 		if (!is_object($value))
 		{
 			return trigger_error('ObjectSet expects value to be object', E_USER_WARNING);
+		}
+		if($this->_checkIntegrity)
+		{
+			// Strips of 'Set' from called class
+			$expectedItemClass = substr(get_called_class(), 0, -3);
+			if(!($value instanceof $expectedItemClass))
+			{
+				return trigger_error(
+						sprintf('Value not match data integrity: expected class \'%s\'', $expectedItemClass),
+						E_USER_WARNING
+				);
+			}
 		}
 		$this->set[spl_object_hash($value)] = $value;
 	}

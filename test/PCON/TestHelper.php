@@ -18,7 +18,7 @@
  * To run the tests, simply point to Tests dir on the command line: 
  * phpunit test/PCON/Tests
  */
-require_once 'PHPUnit\Framework\TestCase.php';
+require_once 'PHPUnit/Framework/TestCase.php';
 
 function autoload($class)
 {

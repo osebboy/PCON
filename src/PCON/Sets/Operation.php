@@ -97,4 +97,3 @@ class Operation
 		$set->build($arr);
 	}
 }
-?>

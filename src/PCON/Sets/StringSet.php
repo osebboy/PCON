@@ -165,4 +165,3 @@ class StringSet implements SetInterface
 		return $this->set;
 	}
 }
-?>

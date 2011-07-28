@@ -255,4 +255,3 @@ class Map implements MapInterface, IteratorAggregate
 		return count($this->map);
 	}
 }
-?>

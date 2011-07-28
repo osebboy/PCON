@@ -342,4 +342,3 @@ class MultiMap implements MapInterface, IteratorAggregate
 		return count($this->map);
 	}
 }
-?>

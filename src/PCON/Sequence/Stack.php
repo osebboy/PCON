@@ -100,4 +100,3 @@ class Stack implements IteratorAggregate
 		return end($this->stack);
 	}
 }
-?>

@@ -106,4 +106,3 @@ class Queue implements IteratorAggregate
 		return count($this->queue);
 	}
 }
-?>

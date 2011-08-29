@@ -178,4 +178,3 @@ class ObjectSet implements SetInterface
 		return $this->set;
 	}
 }
-?>

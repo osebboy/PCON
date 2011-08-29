@@ -239,4 +239,3 @@ class Liste implements ListInterface
 		return $comp ? usort($this->list, $comp) : ksort($this->list);
 	}
 }
-?>

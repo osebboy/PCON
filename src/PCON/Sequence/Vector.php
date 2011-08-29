@@ -261,4 +261,3 @@ class Vector implements VectorInterface
 		return (int) count($this->vector);
 	}
 }
-?>

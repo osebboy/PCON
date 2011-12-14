@@ -15,7 +15,7 @@
  */
 namespace PCON\Interfaces;
 
-use IteratorAggreagte;
+use IteratorAggregate;
 
 /**
  * Pcon Interface is the base for all the PCON Containers.

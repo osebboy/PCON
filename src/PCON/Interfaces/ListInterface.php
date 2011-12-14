@@ -9,30 +9,28 @@
  * that was distributed with this source code.
  *
  * @author     Omercan Sebboy (www.osebboy.com)
- * @package    PCON\Sequence
  * @copyright  Copyright(c) 2011, Omercan Sebboy (osebboy@gmail.com)
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
  * @version    1.0
  */
-namespace PCON\Sequence;
+namespace PCON\Interfaces;
 
-use IteratorAggregate, Closure;
+use Closure;
 
 /**
  * List interface.
  * 
  * @author  Omercan Sebboy (www.osebboy.com)
- * @see PCON\Sequence\Liste
  * @version 1.0
  */
-interface ListInterface extends IteratorAggregate
+interface ListInterface extends ContainerInterface
 {
 	// element access
 	public function back();
 	public function front();
 	
 	// modifiers
-	public function assign(array $array, $validate = true);
+	public function assign($args);
 	public function clear();
 	public function erase($index);
 	public function insert($index, $value);
@@ -41,10 +39,13 @@ interface ListInterface extends IteratorAggregate
 	public function push_back($value);
 	public function push_front($value);
 	public function remove($value);
+	public function remove_if(Closure $predicate);
 	
 	// operations
-	public function reverse();
-	public function sort();
+	public function filter(Closure $predicate);
+	public function reverse($preserve_keys = true);
+	public function sort(Closure $comp = null);
+	public function unique();
 	
 	// validators and capacity
 	public function isEmpty();

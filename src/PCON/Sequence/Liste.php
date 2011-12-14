@@ -16,6 +16,8 @@
  */
 namespace PCON\Sequence;
 
+use PCON\Interfaces\ContainerInterface;
+use PCON\Interfaces\ListInterface;
 use Closure, ArrayIterator;
 
 /**
@@ -181,7 +183,7 @@ class Liste implements ListInterface
 	 *
 	 * @return Liste 
 	 */
-	public function merge(SequenceInterface $container)
+	public function merge(ListInterface $container)
 	{
 		$this->container = array_merge($this->container, $container->toArray());
 
@@ -292,6 +294,17 @@ class Liste implements ListInterface
 	public function sort(Closure $comp = null)
 	{
 		return $comp ? uasort($this->container, $comp) : ksort($this->container);
+	}
+
+	/**
+	 * Return list in an array.
+	 *
+	 * @see PCON\Interfaces\ContainerInterface
+	 * @return array 
+	 */
+	public function toArray()
+	{
+		return $this->container;
 	}
 
 	/**

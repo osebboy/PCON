@@ -20,7 +20,7 @@ use Closure, ArrayIterator;
 
 /**
  * Liste (List) is a lighweight sequence container(FIFO), as such its elements 
- * are ordered following a linear sequence, an ordered collection of values
+ * are ordered following a linear sequence, a collection of values
  * which may occur more than once.
  * 
  * 'List' is a reserved name in PHP, so the name 'Liste' is adapted instead,
@@ -36,32 +36,42 @@ class Liste implements ListInterface
 	 * 
 	 * @var array
 	 */
-	protected $list = array();
+	protected $container = array();
 	
 	/**
-	 * Assign an array to the container, which tests the 
-	 * array keys for integer values by default and can be
-	 * declared false to disable if the incoming indices
-	 * are known to be integers already but not validating
-	 * is not recommended.
+	 * Assign an array of elements with key => $value pairs
+	 * or provide arguments.
 	 * 
-	 * @param  array $array
-	 * @param  bool  $validate
-	 * @return void
+	 * <code>
+	 * $list = new Liste();
+	 *
+	 * // values as arguments
+	 * $list->assign( 'cat', 'dog' );
+	 * 
+	 * // or an array
+	 * $list->assign( array(0 => 'cat', 1 => 'dog') );
+	 *
+	 * // or another container
+	 * $list->assign( $list2 ); 
+	 * 
+	 * // returns itself for chaining
+	 * $list->assign('cat', 'dog')->filter($somefunction);
+	 * </code>
+	 *
+	 * @param mixed $args
+	 * @return $this
 	 */
-	public function assign(array $array, $validate = true)
+	public function assign($args)
 	{
-		if ($validate)
+		$args = is_array($args) ? $args : ($args instanceof ContainerInterface ? $args->toArray() : func_get_args());
+		
+		$this->clear();
+		
+		foreach ( $args as $k => $v )
 		{
-			foreach ($array as $k => $v)
-			{
-				$this->insert($k, $v);
-			}
+			$this->insert($k, $v);
 		}
-            else
-            {
-		$this->list = $array;
-            }
+		return $this;
 	}
 	
 	/**
@@ -71,7 +81,7 @@ class Liste implements ListInterface
 	 */
 	public function back()
 	{
-		return end($this->list);
+		return end($this->container);
 	}
 	
 	/**
@@ -81,7 +91,7 @@ class Liste implements ListInterface
 	 */
 	public function clear()
 	{
-		$this->list = array();
+		$this->container = array();
 	}
 
 	/**
@@ -92,13 +102,28 @@ class Liste implements ListInterface
 	 */
 	public function erase($index)
 	{
-		if (isset($this->list[$index])) 
+		$ret = null;
+
+		if ( isset($this->container[$index]) ) 
 		{ 
-			$ret = $this->list[$index];
-			unset($this->list[$index]);
-			return $ret; 
+			$ret = $this->container[$index];
+
+			unset($this->container[$index]);
 		}
-		return null;
+		return $ret;
+	}
+
+	/**
+	 * Filter the list with a predicate and return filtered elements
+	 * in a new list. 
+	 *
+	 * @return Liste
+	 */
+	public function filter(Closure $predicate)
+	{
+		$list = new Liste();
+		
+		return $list->assign(array_filter($this->container, $predicate));
 	}
 	
 	/**
@@ -108,7 +133,7 @@ class Liste implements ListInterface
 	 */
 	public function front()
 	{
-		return reset($this->list);
+		return reset($this->container);
 	}
 
 	/**
@@ -118,7 +143,7 @@ class Liste implements ListInterface
 	 */
 	public function getIterator()
 	{
-		return new ArrayIterator($this->list);
+		return new ArrayIterator($this->container);
 	}
 	
 	/**
@@ -132,8 +157,13 @@ class Liste implements ListInterface
 	 */
 	public function insert($index, $value)
 	{
-		if ( !is_int($index) ) { return trigger_error('Invalid index', E_USER_WARNING); }
-		$this->list[$index] = $value; 
+		if ( !is_int($index) ) 
+		{ 
+			return trigger_error('List expects index to be an integer', E_USER_WARNING); 
+		}
+		$this->container[$index] = $value; 
+	
+		return $this;
 	}
 
 	/**
@@ -143,7 +173,19 @@ class Liste implements ListInterface
 	 */
 	public function isEmpty()
 	{
-		return !$this->list;
+		return !$this->container;
+	}
+
+	/**
+	 * Merge a different list to $this one.
+	 *
+	 * @return Liste 
+	 */
+	public function merge(SequenceInterface $container)
+	{
+		$this->container = array_merge($this->container, $container->toArray());
+
+		return $this;
 	}
 
 	/**
@@ -153,7 +195,7 @@ class Liste implements ListInterface
 	 */
 	public function pop_back()
 	{
-		return array_pop($this->list);
+		return array_pop($this->container);
 	}
 
 	/**
@@ -163,7 +205,7 @@ class Liste implements ListInterface
 	 */
 	public function pop_front()
 	{
-		return array_shift($this->list);
+		return array_shift($this->container);
 	}
 	
 	/**
@@ -174,7 +216,7 @@ class Liste implements ListInterface
 	 */
 	public function push_back($value)
 	{
-		$this->list[] = $value;
+		return array_push($this->container, $value);
 	}
 
 	/**
@@ -185,7 +227,7 @@ class Liste implements ListInterface
 	 */
 	public function push_front($value)
 	{
-		return array_unshift($this->list, $value);
+		return array_unshift($this->container, $value);
 	}
 
 	/**
@@ -198,23 +240,36 @@ class Liste implements ListInterface
 	 */
 	public function remove($value)
 	{
-		$keys = array_keys($this->list, $value, true);
-		foreach ($keys as $key)
+		return $this->remove_if( function ($v) { return $v === $value; } );
+	}
+
+	/**
+	 * Remove the elements if satisfies the predicate.
+	 *
+	 * @return int | number of removed elements 
+	 */
+	public function remove_if(Closure $predicate)
+	{
+		$found = array_filter($this->container, $predicate);
+	
+		foreach ( array_keys($found) as $key )
 		{
-			unset($this->list[$key]);
+			unset($this->container[$key]);
 		}
-		return count($keys);
+		return count($found);
 	}
 
 	/**
 	 * Reverses the order of the elements in the list container,
 	 * All the index references remain valid.
 	 * 
-	 * @return void
+	 * @return Liste | $this
 	 */
-	public function reverse()
+	public function reverse($preserve_keys = true)
 	{
-		$this->list = array_reverse($this->list, true);
+		$this->container = array_reverse($this->container, $preserve_keys);
+
+		return $this
 	}
 
 	/**
@@ -224,7 +279,7 @@ class Liste implements ListInterface
 	 */
 	public function size()
 	{
-		return (int) count($this->list);
+		return count($this->container);
 	}
 	
 	/**
@@ -236,6 +291,27 @@ class Liste implements ListInterface
 	 */
 	public function sort(Closure $comp = null)
 	{
-		return $comp ? usort($this->list, $comp) : ksort($this->list);
+		return $comp ? uasort($this->container, $comp) : ksort($this->container);
+	}
+
+	/**
+	 * Returns the unique elements in a new list.
+	 *
+	 * @return Liste 
+	 */
+	public function unique()
+	{
+		$array = array();
+
+		foreach ( $this->container as $key => $value )
+		{
+			if ( !in_array($value, $array, true) )
+			{
+				$array[$key] = $value;
+			}
+		}
+		$list = new Liste();
+		
+		return $list->assign($array);
 	}
 }

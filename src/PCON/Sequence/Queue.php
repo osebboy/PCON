@@ -2,21 +2,21 @@
 /**
  * PCON: PHP Containers.
  * 
- * Copyright (c) 2011, Omercan Sebboy <osebboy@gmail.com>.
+ * Copyright (c) 2011 - 2012, Omercan Sebboy <osebboy@gmail.com>.
  * All rights reserved.
  *
  * For the full copyright and license information, please view the LICENSE file 
  * that was distributed with this source code.
  *
  * @author     Omercan Sebboy (www.osebboy.com)
- * @package    PCON\Sequence
- * @copyright  Copyright(c) 2011, Omercan Sebboy (osebboy@gmail.com)
+ * @copyright  Copyright(c) 2011 - 2012, Omercan Sebboy (osebboy@gmail.com)
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
- * @version    1.0
+ * @version    1.1
  */
 namespace PCON\Sequence;
 
-use IteratorAggregate, SplFixedArray;
+use PCON\Interfaces\Pcon;
+use SplFixedArray;
 
 /**
  * Queue is a first in, first out (FIFO) data structure.
@@ -25,16 +25,16 @@ use IteratorAggregate, SplFixedArray;
  * which can be used as is or extended.
  * 
  * @author  Omercan Sebboy (www.osebboy.com)
- * @version 1.0
+ * @version 1.1
  */
-class Queue implements IteratorAggregate
+class Queue implements Pcon
 {
 	/**
-	 * Container.
+	 * Queue.
 	 * 
 	 * @var array
 	 */
-	protected $queue = array();
+	protected $container = array();
 	
 	/**
 	 * Returns the last element in the queue container.
@@ -43,7 +43,7 @@ class Queue implements IteratorAggregate
 	 */
 	public function back()
 	{
-		return end($this->queue);
+		return end($this->container);
 	}
 	
 	/**
@@ -53,7 +53,7 @@ class Queue implements IteratorAggregate
 	 */
 	public function dequeue()
 	{
-		return array_shift($this->queue);
+		return array_shift($this->container);
 	}
 	
 	/**
@@ -63,7 +63,7 @@ class Queue implements IteratorAggregate
 	 */
 	public function enqueue($value)
 	{
-		$this->queue[] = $value;
+		return array_push($this->container, $value);
 	}
 	
 	/**
@@ -73,7 +73,7 @@ class Queue implements IteratorAggregate
 	 */
 	public function front()
 	{
-		return reset($this->queue);
+		return reset($this->container);
 	}
 	
 	/**
@@ -83,7 +83,7 @@ class Queue implements IteratorAggregate
 	 */
 	public function getIterator()
 	{
-		return SplFixedArray::fromArray($this->queue);
+		return SplFixedArray::fromArray($this->container);
 	}
 	
 	/**
@@ -93,7 +93,7 @@ class Queue implements IteratorAggregate
 	 */
 	public function isEmpty()
 	{
-		return !$this->queue;
+		return !$this->container;
 	}
 	
 	/**
@@ -103,6 +103,6 @@ class Queue implements IteratorAggregate
 	 */
 	public function size()
 	{
-		return count($this->queue);
+		return count($this->container);
 	}
 }

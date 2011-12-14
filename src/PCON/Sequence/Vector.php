@@ -2,30 +2,33 @@
 /**
  * PCON: PHP Containers.
  * 
- * Copyright (c) 2011, Omercan Sebboy <osebboy@gmail.com>.
+ * Copyright (c) 2011 - 2012, Omercan Sebboy <osebboy@gmail.com>.
  * All rights reserved.
  *
  * For the full copyright and license information, please view the LICENSE file 
  * that was distributed with this source code.
  *
  * @author     Omercan Sebboy (www.osebboy.com)
- * @package    PCON\Sequence
- * @copyright  Copyright(c) 2011, Omercan Sebboy (osebboy@gmail.com)
+ * @copyright  Copyright(c) 2011 - 2012, Omercan Sebboy (osebboy@gmail.com)
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
- * @version    1.0
+ * @version    1.1
  */
 namespace PCON\Sequence;
 
-use ArrayIterator;
+use PCON\Interfaces\ContainerInterface;
+use PCON\Interfaces\VectorInterface;
+use ArrayIterator, Closure;
 
 /**
+ * 		< Vector will be depreceated as of v 1.2 >
+ * 
  * Vector is a sequence container which keeps a strict linear sequence
  * between elements. As such, removing or inserting elements to a Vector other
  * than its end will lead the container to rearrange the indices. As a result,
  * the prior index -> value relations will be lost.
  * 
  * @author  Omercan Sebboy (www.osebboy.com)
- * @version 1.0
+ * @version 1.1
  */
 class Vector implements VectorInterface
 {	
@@ -34,18 +37,22 @@ class Vector implements VectorInterface
 	 * 
 	 * @var array
 	 */
-	protected $vector = array();
+	protected $container = array();
 	
 	/**
-	 * Assigns an array to container which removes all previous
-	 * index association in the given array.
-	 *  
-	 * @param array $array
-	 * @return void
+	 * Assign an array of elements with key => $value pairs
+	 * or provide arguments.
+	 *
+	 * @param mixed $args
+	 * @return Vector
 	 */
-	public function assign(array $array)
+	public function assign($args)
 	{
-		$this->vector = array_values($array);
+		$args = is_array($args) ? $args : ($args instanceof ContainerInterface ? $args->toArray() : func_get_args());
+
+		$this->container = array_values($args);
+
+		return $this;
 	}
 
 	/**
@@ -55,7 +62,7 @@ class Vector implements VectorInterface
 	 */
 	public function back()
 	{
-		return end($this->vector);
+		return end($this->container);
 	}
 	
 	/**
@@ -65,7 +72,7 @@ class Vector implements VectorInterface
 	 */
 	public function clear()
 	{
-		$this->vector = array();
+		$this->container = array();
 	}
 
 	/**
@@ -82,15 +89,16 @@ class Vector implements VectorInterface
 	 * 
 	 * Ex:
 	 * $vector = new Vector();
-	 * $vector->assign(array('a', 'b', 'c', 'd'));
+	 * $vector->assign('a', 'b', 'c', 'd');
 	 * 
 	 * $it = $vector->getIterator(); // returns ArrayIterator
 	 * 
-	 * foreach ($it as $k => $v)
+	 * foreach ( $it as $k => $v )
 	 * {
-	 * 		if ($v === 'c') {
-	 * 			unset($it[$k]);
-	 * 		}
+	 * 	if ( $v === 'c' ) 
+	 *	{
+	 * 		unset($it[$k]);
+	 * 	}
 	 * }
 	 * 
 	 * current iterator array looks like:
@@ -102,12 +110,35 @@ class Vector implements VectorInterface
 	 * $vector->assign($it->getArrayCopy());
 	 * 
 	 * @param integer $index
-	 * @param integer $length
-	 * @return array | the extracted elements
+	 * @return mixed | removed value, null if none removed
 	 */
-	public function erase($index, $length = 1)
+	public function erase($index)
 	{
-		return array_splice($this->vector, $index, $length);
+		$ret = null;
+
+		if ( isset($this->container[$index]) )
+		{
+			$ret = $this->container[$index];
+
+			unset($this->container[$index]);
+		}
+		$this->container = array_values($this->container);
+
+		return $ret;
+	}
+
+	/**
+	 * Filter the list with a predicate and return filtered elements
+	 * in a new vector. 
+	 *
+	 * @param $predicate | an instance of Closure returning true, or false
+	 * @return Vector
+	 */
+	public function filter(Closure $predicate)
+	{
+		$vector = new Vector();
+		
+		return $vector->assign(array_filter($this->container, $predicate));
 	}
 
 	/**
@@ -117,7 +148,7 @@ class Vector implements VectorInterface
 	 */
 	public function front()
 	{
-		return reset($this->vector);
+		return reset($this->container);
 	}
 
 	/**
@@ -127,29 +158,35 @@ class Vector implements VectorInterface
 	 */
 	public function getIterator()
 	{
-		return new ArrayIterator($this->vector);
+		return new ArrayIterator($this->container);
 	}
 
 	/**
-	 * Inserts an element at the specified index which does not 
-	 * remove or replace the pre-existing element, instead 
-	 * pushes up all the elements opening a segment for the new
-	 * one, rearranges indices, see example below.
+	 * Inserts an element at the specified index. 
 	 * 
-	 * Ex:
-	 * vector ----> array(0 => 'foo', 1 => 'bar')
-	 * $this->insert_at(1, 'zip');
+	 * Index need to be an integer, and it need to either exist in 
+	 * the vector or be equal to last index + 1.
 	 * 
-	 * Now it looks like:
-	 * vector ----> array(0 => 'foo', 1 => 'zip', 2 => 'bar')
+	 * This method only allows to set a value for the existing index, or
+	 * allows to add element to the end of the vector.
 	 * 
-	 * @param integer $index | see example
+	 * @param integer $index
 	 * @param mixed $value
-	 * @return array
+	 * @return Vector | $this
 	 */
-	public function insert_at($index, $value)
+	public function insert($index, $value)
 	{
-		return array_splice($this->vector, $index, 0, $value);
+		if ( !is_int($index) )
+		{
+			return trigger_error('Vector expects index to be an integer', E_USER_WARNING);
+		}
+		if ( !isset($this->container[$index]) || ($index !== $this->size()) )
+		{
+			return trigger_error('Invalid index', E_USER_WARNING);
+		}
+		$this->container[$index] = $value;
+
+		return $this;
 	}
 
 	/**
@@ -160,7 +197,7 @@ class Vector implements VectorInterface
 	 */
 	public function isEmpty()
 	{
-		return !$this->vector;
+		return !$this->container;
 	}
 
 	/**
@@ -173,7 +210,7 @@ class Vector implements VectorInterface
 	 */
 	public function offsetExists($offset)
 	{
-		return isset($this->vector[$offset]);
+		return isset($this->container[$offset]);
 	}
 	
 	/**
@@ -182,17 +219,15 @@ class Vector implements VectorInterface
 	 * ArrayAccess Interface
 	 * 
 	 * @param integer $offset
-	 * @return mixed | element if offset is set, else NOTICE
+	 * @return mixed | element if offset is set, else WARNING
 	 */
 	public function offsetGet($offset)
 	{
-		return isset($this->vector[$offset]) ? $this->vector[$offset] : trigger_error('Invalid index');
+		return isset($this->container[$offset]) ? $this->container[$offset] : trigger_error('Invalid index', E_USER_WARNING);
 	}
 	
 	/**
-	 * If the index exists then its value is replaced, else adds the value
-	 * to the end of the vector, which means this does not act like insert_at().
-	 * This method is mainly used to replace a value at a certain index point.
+	 * Either modify an existing index, or add value to the end of the container.
 	 * 
 	 * ArrayAccess Interface
 	 * 
@@ -202,7 +237,7 @@ class Vector implements VectorInterface
 	 */
 	public function offsetSet($offset, $value)
 	{
-		($offset && isset($this->vector[$offset])) ? $this->vector[$offset] = $value : $this->vector[] = $value;
+		$offset ? $this->insert($offset, $value) : $this->container[] = $value;
 	}
 	
 	/**
@@ -227,7 +262,7 @@ class Vector implements VectorInterface
 	 */
 	public function pop_back()
 	{
-		return array_pop($this->vector);
+		return array_pop($this->container);
 	}
 	
 	/**
@@ -238,7 +273,7 @@ class Vector implements VectorInterface
 	 */
 	public function push_back($value)
 	{
-		$this->vector[] = $value;
+		return array_push($this->container, $value);
 	}
 
 	/**
@@ -248,7 +283,9 @@ class Vector implements VectorInterface
 	 */
 	public function reverse()
 	{
-		$this->vector = array_reverse($this->vector);
+		$this->container = array_reverse($this->container);
+
+		return $this;
 	}
 
 	/**
@@ -258,6 +295,17 @@ class Vector implements VectorInterface
 	 */
 	public function size()
 	{
-		return (int) count($this->vector);
+		return count($this->vector);
+	}
+
+	/**
+	 * Return vector in an array.
+	 *
+	 * @see PCON\Interfaces\ContainerInterface
+	 * @return array 
+	 */
+	public function toArray()
+	{
+		return $this->container;
 	}
 }

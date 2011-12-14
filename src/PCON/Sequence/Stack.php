@@ -2,21 +2,21 @@
 /**
  * PCON: PHP Containers.
  * 
- * Copyright (c) 2011, Omercan Sebboy <osebboy@gmail.com>.
+ * Copyright (c) 2011 - 2012, Omercan Sebboy <osebboy@gmail.com>.
  * All rights reserved.
  *
  * For the full copyright and license information, please view the LICENSE file 
  * that was distributed with this source code.
  *
  * @author     Omercan Sebboy (www.osebboy.com)
- * @package    PCON\Sequence
- * @copyright  Copyright(c) 2011, Omercan Sebboy (osebboy@gmail.com)
+ * @copyright  Copyright(c) 2011 - 2012, Omercan Sebboy (osebboy@gmail.com)
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
- * @version    1.0
+ * @version    1.1
  */
 namespace PCON\Sequence;
 
-use IteratorAggregate, SplFixedArray;
+use PCON\Interfaces\Pcon;
+use SplFixedArray;
 
 /**
  * Stack is a last in, first out(LIFO) data structure and is known by
@@ -28,16 +28,16 @@ use IteratorAggregate, SplFixedArray;
  * is or can be extended depending on requirements.
  * 
  * @author  Omercan Sebboy (www.osebboy.com)
- * @version 1.0
+ * @version 1.1
  */
-class Stack implements IteratorAggregate
+class Stack implements Pcon
 {
 	/**
 	 * Stack container.
 	 * 
 	 * @var array
 	 */
-	protected $stack = array();
+	protected $container = array();
 
 	/**
 	 * Iterator, SplFixedArray
@@ -46,7 +46,7 @@ class Stack implements IteratorAggregate
 	 */
 	public function getIterator()
 	{
-		return SplFixedArray::fromArray(array_reverse($this->stack));
+		return SplFixedArray::fromArray(array_reverse($this->container));
 	}
 	
 	/**
@@ -56,7 +56,7 @@ class Stack implements IteratorAggregate
 	 */
 	public function isEmpty()
 	{
-		return !$this->stack;
+		return !$this->container;
 	}
 	
 	/**
@@ -66,18 +66,18 @@ class Stack implements IteratorAggregate
 	 */
 	public function pop()
 	{
-		return array_pop($this->stack);
+		return array_pop($this->container);
 	}
 	
 	/**
 	 * Adds an element at the end of the stack.
 	 * 
 	 * @param mixed $value
-	 * @return void
+	 * @return integer | new size of stack after $value added
 	 */
 	public function push($value)
 	{
-		$this->stack[] = $value;
+		return array_push($this->container, $value);
 	}
 	
 	/**
@@ -87,7 +87,7 @@ class Stack implements IteratorAggregate
 	 */
 	public function size()
 	{
-		return count($this->stack);
+		return count($this->container);
 	}
 
 	/**
@@ -97,6 +97,6 @@ class Stack implements IteratorAggregate
 	 */
 	public function top()
 	{
-		return end($this->stack);
+		return end($this->container);
 	}
 }

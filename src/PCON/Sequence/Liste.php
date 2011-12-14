@@ -2,17 +2,16 @@
 /**
  * PCON: PHP Containers.
  * 
- * Copyright (c) 2011, Omercan Sebboy <osebboy@gmail.com>.
+ * Copyright (c) 2011 - 2012, Omercan Sebboy <osebboy@gmail.com>.
  * All rights reserved.
  *
  * For the full copyright and license information, please view the LICENSE file 
  * that was distributed with this source code.
  *
  * @author     Omercan Sebboy (www.osebboy.com)
- * @package    PCON\Sequence
- * @copyright  Copyright(c) 2011, Omercan Sebboy (osebboy@gmail.com)
+ * @copyright  Copyright(c) 2011 - 2012, Omercan Sebboy (osebboy@gmail.com)
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
- * @version    1.0
+ * @version    1.1
  */
 namespace PCON\Sequence;
 
@@ -29,7 +28,7 @@ use Closure, ArrayIterator;
  * which means 'List'in German, Turkish and in some other languages.
  * 
  * @author  Omercan Sebboy (www.osebboy.com)
- * @version 1.0
+ * @version 1.1
  */
 class Liste implements ListInterface
 {
@@ -119,6 +118,7 @@ class Liste implements ListInterface
 	 * Filter the list with a predicate and return filtered elements
 	 * in a new list. 
 	 *
+	 * @param $predicate | an instance of Closure returning true, or false
 	 * @return Liste
 	 */
 	public function filter(Closure $predicate)
@@ -271,7 +271,7 @@ class Liste implements ListInterface
 	{
 		$this->container = array_reverse($this->container, $preserve_keys);
 
-		return $this
+		return $this;
 	}
 
 	/**

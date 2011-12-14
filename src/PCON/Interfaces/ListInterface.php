@@ -31,7 +31,6 @@ interface ListInterface extends ContainerInterface
 	
 	// modifiers
 	public function assign($args);
-	public function clear();
 	public function erase($index);
 	public function insert($index, $value);
 	public function pop_back();
@@ -46,8 +45,4 @@ interface ListInterface extends ContainerInterface
 	public function reverse($preserve_keys = true);
 	public function sort(Closure $comp = null);
 	public function unique();
-	
-	// validators and capacity
-	public function isEmpty();
-	public function size();
 }

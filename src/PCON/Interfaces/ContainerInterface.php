@@ -33,19 +33,19 @@ interface ContainerInterface extends Pcon
 	public function clear();
 
 	/**
-	 * Provide a predicate and get filtered results in a new 
-	 * instance of the corresponding container. Since the
-	 * return value will always be a new instance of the
-	 * container, filtering can be chained.
+	 * Provide a predicate and get filtered results in a new instance of the 
+	 * corresponding container. Since the return value will always be a new instance 
+	 * of the container, filtering can be chained.
 	 * 
-	 * Example:
+	 * <code>
 	 * $list = new Liste();
 	 * $filtered = $list->assign($array)
 	 * 		    ->filter($func1)
 	 * 		    ->merge($otherList)
 	 * 		    ->filter($func2);
 	 * 
-	 * $filtered instanceof Liste === true
+	 * $filtered instanceof Liste; // true
+	 * </code>
 	 * 
 	 * @param Closure $predicate
 	 * @return $this
@@ -69,33 +69,45 @@ interface ContainerInterface extends Pcon
 	/**
 	 * Container to Array.
 	 * 
-	 * PHP array functions (which is called Operations or Algorithms)
-	 * do not accept Iterator or IteratorAggregate instances as
-	 * the array argument. This isolates PCON containers from the 
-	 * built in or user defined array functions. This method provides
-	 * flexibility in adapting these containers into existing 
-	 * systems. While most of the iterators provide a mehtod of obtaining
-	 * the array copy, it will require to create a new instance of the
-	 * iterator, which is not desirable in all circumstances.
-	 *  
-	 * Example:
+	 * PHP array functions do not accept Iterator or IteratorAggregate 
+	 * instances as the array argument. This isolates PCON containers from 
+	 * the built in or user defined array functions. This method provides
+	 * flexibility in adapting PCON containers into existing systems. 
+	 * 
+	 * While most of the iterators provide a method of obtaining the array
+	 * copy (ArrayIterator::getArrayCopy() or SplFixedArray::toArray()...)
+	 * it will require to create a new instance of the iterator, which is not
+	 * desirable in all circumstances.
+	 * 
+	 * In contrast, this method is not in compliance with the theory of all 
+	 * the data structures because it gives access to the keys and the container
+	 * structure. Since this is implemented in the user-land instead of the PHP 
+	 * language construct, it should be considered as a convenience method.
+	 * 
+	 * <code>
 	 * $list = new Liste();
-	 * $list->assign('cat', 'doggie', 'cow');
+	 * $list->assign('cat', 'dog');
 	 *  
-	 * $arr = array_filter(
-	 * 			$liste->toArray(), 
-	 * 			function ($v) 
+	 * $arr = array_map( 
+	 * 			function ($value) 
 	 * 			{ 
-	 * 				return strlen($v) === 3; 
-	 * 			}
+	 * 				return strtoupper($value); 
+	 * 			},
+	 * 			$list->toArray();
 	 * );
 	 * 
-	 * $arr === array( 'cat', 'cow' ) // true
+	 * $arr === array( 'CAT', 'DOG' ); // true
 	 * 
-	 * Or...
+	 * // or create a new container with $arr and continue operations on it:
 	 * 
-	 * $list2 = new Liste();
-	 * $list2->assign(array_filter($list->toArray(), $your_function));
+	 * $set = new StringSet();
+	 * $set->assign($arr)->erase('CAT');
+	 * 
+	 * $set->count('DOG'); // 1
+	 * $set->count('CAT'); // 0
+	 * </code>
+	 * 
+	 * @return array
 	 */
 	public function toArray();
 }

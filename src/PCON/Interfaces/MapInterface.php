@@ -28,9 +28,11 @@ interface MapInterface extends ContainerInterface, ArrayAccess
 	// modifiers
 	public function erase($key);
 	public function insert($key, $value);
+	public function remove($value);
 	
 	// operations
 	public function count($key);
 	public function indexOf($value);
+	public function seek($position);
 	public function sort(Closure $comp);
 }

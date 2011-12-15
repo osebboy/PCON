@@ -2,55 +2,44 @@
 /**
  * PCON: PHP Containers.
  * 
- * Copyright (c) 2011, Omercan Sebboy <osebboy@gmail.com>.
+ * Copyright (c) 2011 - 2012, Omercan Sebboy <osebboy@gmail.com>.
  * All rights reserved.
  *
  * For the full copyright and license information, please view the LICENSE file 
  * that was distributed with this source code.
  *
  * @author     Omercan Sebboy (www.osebboy.com)
- * @package    PCON\Maps
- * @copyright  Copyright(c) 2011, Omercan Sebboy (osebboy@gmail.com)
+ * @copyright  Copyright(c) 2011 - 2012, Omercan Sebboy (osebboy@gmail.com)
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
- * @version    1.0
+ * @version    1.1
  */
 namespace PCON\Maps;
 
-use Closure, IteratorAggregate, ArrayIterator;
+use PCON\Interfaces\MapInterface;
+use Closure, ArrayIterator;
 
 /**
  * Map is a lightweight associative container that stores elements formed 
  * by the combination of a key value and a mapped value.
  * 
- * Map does not have an internal iterator as most might expect. This is
- * mainly because of SPL Iterator's performance related issues.
- * Map implements the IteratorAggregate interface which provides an
- * external iterator to iterate over the container elements, performing
- * the same as regular PHP arrays. 
- * 
  * @author  Omercan Sebboy (www.osebboy.com)
- * @version 1.0
+ * @version 1.1
  */
-class Map implements MapInterface, IteratorAggregate
+class Map implements MapInterface
 {
 	/**
-	 * Container.
+	 * Map container.
 	 * 
 	 * @var array
 	 */
-	protected $map = array();
-
+	protected $container = array();
+	
 	/**
-	 * Assigns an array to the container removing all previous elements 
-	 * in the container.
+	 * Iterator position.
 	 * 
-	 * @param array $array
-	 * @return void
+	 * @var mixed | int or string
 	 */
-	public function assign(array $array)
-	{
-		$this->map = $array;
-	}
+	protected $pos = null;
 
 	/**
 	 * Clears the container and removes all elements.
@@ -59,7 +48,21 @@ class Map implements MapInterface, IteratorAggregate
 	 */
 	public function clear()
 	{
-		$this->map = array();
+		$this->container = array();
+	}
+
+	/**
+	 * Searches the container for an element with $key. Maps do not allow
+         * Since map container doesn't allow the same key again, it always returns
+         * 0(zero) or 1(one). In contrast, MultiMap containers can return more than
+         * 1 since MultiMaps allow more than 1 value for a key.
+         *
+	 * @see PCON\Maps\MultiMap
+	 * @return integer  
+	 */
+	public function count($key)
+	{
+		return (int) isset($this->container[$key]);
 	}
 
 	/**
@@ -70,13 +73,15 @@ class Map implements MapInterface, IteratorAggregate
 	 */
 	public function erase($key)
 	{
-		if (isset($this->map[$key]))
+		$ret = null;
+
+		if ( isset($this->container[$key]) )
 		{
-			$ret = $this->map[$key];
-			unset($this->map[$key]);
-			return $ret;
+			$ret = $this->container[$key];
+
+			unset($this->container[$key]);
 		}
-		return null;
+		return $ret;
 	}
 	
 	/**
@@ -90,18 +95,9 @@ class Map implements MapInterface, IteratorAggregate
 	 */
 	public function filter(Closure $predicate)
 	{
-		return array_filter($this->map, $predicate);
-	}
-
-	/**
-	 * Returns the value associated with $key.
-	 * 
-	 * @param mixed $key | integer or string
-	 * @return mixed
-	 */
-	public function get($key)
-	{
-		return isset($this->map[$key]) ? $this->map[$key] : null;
+		$map = new Map();
+	
+		return $map->assign(array_filter($this->container, $predicate));
 	}
 
 	/**
@@ -111,18 +107,33 @@ class Map implements MapInterface, IteratorAggregate
 	 */
 	public function getIterator()
 	{
-		return new ArrayIterator($this->map);
+		$it = new ArrayIterator($this->container);
+		
+		// need to check again if position still exists
+		// because seek() can be called and the key can be erased before the iterator
+		if ( $this->pos )
+		{
+			if ( !isset($this->container[$this->pos]) )
+			{
+				throw new \LogicException('Invalid position');
+			}
+			$it->seek($this->pos);
+			
+			$this->pos = null; // reset the position
+		}
+		return $it;
 	}
 
 	/**
-	 * Returns whether the key isset or not in the container.
-	 * 
-	 * @param mixed $key | integer or string
-	 * @return boolean
+	 * Searches the map with a value and returns the key if found. There might
+         * more than one of the same value. This returns the first key found.
+	 *
+	 * @param mixed
+	 * @return mixed | associated key with the value, false otherwise
 	 */
-	public function has($key)
+	public function indexOf($value)
 	{
-		return isset($this->map[$key]);
+		return array_search($value, $this->container, true);
 	}
 
 	/**
@@ -132,9 +143,11 @@ class Map implements MapInterface, IteratorAggregate
 	 * @param mixed $value
 	 * @return void
 	 */
-	public function insert($key, $value = null)
+	public function insert($key, $value)
 	{
-		$this->map[$key] = $value;
+		$this->container[$key] = $value;
+		
+		return $this;
 	}
 
 	/**
@@ -144,48 +157,33 @@ class Map implements MapInterface, IteratorAggregate
 	 */
 	public function isEmpty()
 	{
-		return !$this->map;
-	}
-
-	/**
-	 * Returns all the container keys, since the map can have the
-	 * same values more than ones, providing $value in the 
-	 * argument will return the keys of the value.
-	 *  
-	 * @param mixed $value
-	 * @return array
-	 */
-	public function keys($value = null)
-	{
-		return $value ? array_keys($this->map, $value, true) : array_keys($this->map);
+		return !$this->container;
 	}
 	
 	/**
-	 * Alias of has().
+	 * Tests if offset exists.
 	 * 
 	 * ArrayAccess interface.
 	 * 
-	 * @see has()
 	 * @param mixed $offset | integer or string
 	 * @return boolean
 	 */
 	public function offsetExists($offset)
 	{
-		return $this->has($offset);
+		return isset($this->container[$offset]);
 	}
 	
 	/**
-	 * Alias of get().
+	 * Get an element at an offset.
 	 * 
 	 * ArrayAcces interface.
 	 * 
-	 * @see get()
 	 * @param mixed $offset | integer or string
 	 * @return mixed
 	 */
 	public function offsetGet($offset)
 	{
-		return $this->get($offset);
+		return isset($this->container[$offset]) ? $this->container[$offset] : null;
 	}
 	
 	/**
@@ -199,7 +197,7 @@ class Map implements MapInterface, IteratorAggregate
 	 */
 	public function offsetSet($offset, $value)
 	{
-		$offset ? $this->map[$offset] = $value : $this->map[] = $value;
+		$offset ? $this->container[$offset] = $value : $this->container[] = $value;
 	}
 	
 	/**
@@ -215,34 +213,62 @@ class Map implements MapInterface, IteratorAggregate
 	{
 		return $this->erase($offset);
 	}
-	
-	/**
-	 * Adds $value to the end of container with an integer key.
-	 * 
-	 * @param mixed $value
-	 * @return void
-	 */
-	public function push_back($value)
-	{
-		$this->map[] = $value;	
-	}
 
 	/**
-	 * Removes value from the container, the container might have
-	 * the same value more than once and this removes each 
-	 * returning the number of removals.
-	 * 
-	 * @param mixed $value
-	 * @return integer | number of removals
+	 * Remove a value without looking at its key.
+	 *
+         * @param mixed
+	 * @return boolean | true if removed, false otherwise
 	 */
 	public function remove($value)
 	{
-		$keys = $this->keys($value);
-		foreach ($keys as $k)
+		return (boolean) $this->erase($this->indexOf($value));
+	}
+	
+	/**
+	 * Set the iterator starting position. The position is reset to
+	 * null after iteration.
+	 * 
+	 * @see Map::getIterator()
+	 * @param Mixed |int or string
+	 * @return Map | $this
+	 */
+	public function seek($position)
+	{
+		if ( !isset($this->container[$position]) )
 		{
-			unset($this->map[$k]);
+			throw new \InvalidArgumentException('Key does not exist');
 		}
-		return count($keys);
+		$this->pos = $position;
+		
+		return $this;
+	}
+
+	/**
+	 * Sorts the map with a Comparison function. Key => Value relation is preserved.
+	 *
+	 * <code>
+	 * $comp = function ($a, $b) 
+	 * {
+    	 * 	if ($a == $b) 
+	 * 	{
+         * 		return 0;
+    	 * 	}
+    	 * 	return ($a < $b) ? -1 : 1;
+	 * };
+	 * $map = new Map();
+	 * $map->assign( array('tar' => 'zip', 'foo' => 'bar') );
+	 * var_dump($map->sort($comp)) ; // true(boolean)
+	 *
+	 * $map->toArray() === array('foo' => 'bar', 'tar' => 'zip'); // true
+	 * </code>
+	 *
+	 * @param $comp | Closure, function
+	 * @return boolean | true if sorted, false otherwise
+	 */
+	public function sort(Closure $comp)
+	{
+		return uasort($comp, $this->container);
 	}
 
 	/**
@@ -252,6 +278,17 @@ class Map implements MapInterface, IteratorAggregate
 	 */
 	public function size()
 	{
-		return count($this->map);
+		return count($this->container);
+	}
+
+	/**
+	 * Return map in an array.
+	 *
+	 * @see PCON\Interfaces\ContainerInterface
+	 * @return array 
+	 */
+	public function toArray()
+	{
+		return $this->container;
 	}
 }

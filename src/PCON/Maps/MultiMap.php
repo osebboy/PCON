@@ -2,21 +2,20 @@
 /**
  * PCON: PHP Containers.
  * 
- * Copyright (c) 2011, Omercan Sebboy <osebboy@gmail.com>.
+ * Copyright (c) 2011 - 2012, Omercan Sebboy <osebboy@gmail.com>.
  * All rights reserved.
  *
  * For the full copyright and license information, please view the LICENSE file 
  * that was distributed with this source code.
  *
  * @author     Omercan Sebboy (www.osebboy.com)
- * @package    PCON\Maps
- * @copyright  Copyright(c) 2011, Omercan Sebboy (osebboy@gmail.com)
+ * @copyright  Copyright(c) 2011 - 2012, Omercan Sebboy (osebboy@gmail.com)
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
- * @version    1.0
+ * @version    1.1
  */
 namespace PCON\Maps;
 
-use Closure, IteratorAggregate, RecursiveArrayIterator;
+use Closure;
 
 /**
  * MultiMap is an associative container much like a Map container but allows
@@ -25,162 +24,144 @@ use Closure, IteratorAggregate, RecursiveArrayIterator;
  * Most of the methods have examples right above them and the following 
  * object is used for the examples.
  * 
- * $map = new MultiMap();
- * $map['animals'] = 'cat';
- * $map['animals'] = 'cow';
- * $map['animals'] = 'dog';
- * $map['animals'] = 'fox';
- * $map['animals'] = 'ant';
+ * <code>
+ * $multimap = new MultiMap();
+ * $multimap['animals'] = 'cat';
+ * $multimap['animals'] = 'cow';
+ * $multimap['animals'] = 'dog';
+ * $multimap['animals'] = 'fox';
+ * $multimap['animals'] = 'ant';
+ * </code>
  * 
- * So the container looks like:
+ * So the container looks like: 
+ * array ( "animals" => array (
+ *     			  0 => "cat",
+ *     			  1 => "cow",
+ *     			  2 => "dog",
+ *     			  3 => "fox",
+ *     			  4 => "ant" )
+ * )
  * 
- * MultiMap -> array { "animals" => array {
- *     									0 => "cat",
- *     									1 => "cow",
- *     									2 => "dog",
- *     									3 => "fox",
- *     									4 => "ant"
+ * <code>
+ * // we can position to 'animals'
+ * $multimap->seek('animals');
+ * 
+ * // the following returns cat - cow - dog - fox - ant
+ * foreach ( $multimap as $animal )
+ * {
+ * 	echo $animal . ' - ';
  * }
- *
+ * // and the iterator position reset after the iteration
+ * </code>
+ * 
  * @author  Omercan Sebboy (www.osebboy.com)
- * @version 1.0
+ * @version 1.1
  */
-class MultiMap implements MapInterface, IteratorAggregate
-{
+class MultiMap extends Map
+{	
 	/**
-	 * Key iterator position.
+	 * Returns the element count for a key.
 	 * 
-	 * @see setIteratorPosition()
-	 * @var mixed
-	 */
-	protected $pos = null;
-	
-	/**
-	 * Multi map container.
-	 * 
-	 * @var array
-	 */
-	protected $map = array();
-	
-	/**
-	 * Clears the container and removes all elements.
-	 * 
-	 * @return void
-	 */
-	public function clear()
-	{
-		$this->map = array();
-	}
-	
-	/**
-	 * Returns the number of elements associated with
-	 * a key.
-	 * 
-	 * $map->count('animals') // returns 5
-	 * 
-	 * @param mixed $key | string or integer
-	 * @return integer
+	 * <code>
+	 * $map->count('animals'); // 5
+         * </code>
+	 *
+	 * @param mixed $key | integer or string
+	 * @return integer  
 	 */
 	public function count($key)
 	{
-		return count($this->get($key));
-	}
-	
-	/**
-	 * Erases the key and all the elements associated with it.
-	 * 
-	 * $map->erase('animals');
-	 * $map->has('animals') // returns false
-	 * 
-	 * @param mixed $key | integer or string
-	 * @return array | removed value or null is $key doesn't exists
-	 */
-	public function erase($key)
-	{
-		if (isset($this->map[$key]))
-		{
-			$ret = $this->map[$key];
-			unset($this->map[$key]);
-			return $ret;
-		}
-		return array();
+		return count($this->offsetGet($key));
 	}
 	
 	/**
 	 * Iterates over each value associated with $key passing 
 	 * them $predicate, if the $predicate returns true, the current
-	 * value in the container is added to the result array,
-	 * keys are preserved. 
+	 * value in the container is added to the result.
 	 * 
-	 * // predicate, a trivial example
-	 * 
-	 * $p = function($value) 
+	 * <code> 
+	 * $predicate = function($value) 
 	 * {
 	 * 		// return all values with letter 'o' in it
 	 * 		return stripos($value, 'o') !== false; 			
 	 * };
 	 * 
-	 * $map->filter('animals', $p);
-	 * 
-	 * // returns
-	 * array(1 => 'cow', 2 => 'dog', 3 => 'fox');
+	 * // returns a new MultiMap with key 'animals' and values in Map ('cow', 'dog', 'fox')
+	 * $map->filter($predicate); 
+	 * </code>
 	 * 
 	 * @param Closure $predicate
 	 * @param mixed | integer or string (depth 1)
-	 * @return array | filtered elements
+	 * @return MultiMap with filtered elements
 	 */
-	public function filter($key, Closure $predicate)
+	public function filter(Closure $predicate)
 	{
-		return array_filter($this->get($key), $predicate);
+		$filtered = new MultiMap();
+		
+		foreach ( $this->container as $key => $array )
+		{
+			foreach ( $array as $value )
+			{
+				if ( $predicate($value) )
+				{
+					$filtered[$key] = $value;
+				}
+			}
+		}
+		return $filtered;
 	}
 	
 	/**
-	 * Returns value (depth 2) associated with a key(depth 1)
+	 * Iterator.
 	 * 
-	 * $map->get('animals'); // returns the animals array
-	 * 
-	 * @param mixed $key | integer or string
-	 * @return array
-	 */
-	public function get($key)
-	{
-		return isset($this->map[$key]) ? $this->map[$key] : array();
-	}
-	
-	/**
-	 * Iterator, setIteratorPosition($key) method moves the iterator
-	 * to the specified $key on demand which is useful if a certain
-	 * part of the multi map needs to be iterated.
-	 * 
-	 * @see setIteratorPosition()
-	 * @return RecursiveArrayIterator
+	 * @return ArrayIterator
 	 */
 	public function getIterator()
 	{
-		return new RecursiveArrayIterator($this->pos ? $this->get($this->pos) : $this->map);
-	}
-	
-	/**
-	 * Gets the MultiMap container's key iterator position.
-	 * 
-	 * @see setIteratorPosition()
-	 * @return mixed | null if position isn't set
-	 */
-	public function getIteratorPosition()
-	{
-		return $this->pos;
+		$it = null;
+		
+		// need to check again if position still exists
+		// the key can be erased before the iterator even if the position exists
+		if ( $this->pos )
+		{
+			if ( !isset($this->container[$this->pos]) )
+			{
+				throw new \LogicException('Invalid position');
+			}
+			$it = new ArrayIterator($this->container[$this->pos]);
+			
+			$this->pos = null; // reset the position
+		}
+		else
+		{
+			$it = new ArrayIterator($this->container);
+		}
+		return $it;
 	}
 
 	/**
-	 * Checks whether a key is set.
-	 * 
-	 * @param mixed $key | integer or string
-	 * @return boolean
+	 * Searches the multimap with a value and returns the key if found. There might
+         * more than one of the same value. This returns the first key found.
+	 *
+	 * <code>
+	 * $map->indexOf('cat'); // returns 'animals'
+	 * </code>
+	 *
+	 * @param mixed
+	 * @return mixed | associated key with the value, false otherwise
 	 */
-	public function has($key)
+	public function indexOf($value)
 	{
-		return isset($this->map[$key]);
+		foreach ( $this->container as $key => $array )
+		{
+			if ( in_array($value, $array, true) )
+			{
+				return $key;
+			}
+		}
+		return false;
 	}
+
 	
 	/**
 	 * Inserts key and value, multimap accepts more than 1 value
@@ -188,157 +169,47 @@ class MultiMap implements MapInterface, IteratorAggregate
 	 * 
 	 * @param mixed $key | integer or string
 	 * @param mixed $value
-	 * @return void
+	 * @return MultiMap | $this
 	 */
 	public function insert($key, $value)
 	{
-		$this->map[$key][] = $value;
+		$this->container[$key][] = $value;
+		
+		return $this;
 	}
 	
 	/**
-	 * Returns whether the container is empty or not.
-	 * 
-	 * @return boolean
-	 */
-	public function isEmpty()
-	{
-		return !$this->map;
-	}
-	
-	/**
-	 * Returns all the keys of the map.
-	 * 
-	 * @return array
-	 */
-	public function keys()
-	{
-		return array_keys($this->map);
-	}
-	
-	/**
-	 * Alias of has().
-	 * 
-	 * ArrayAccess interface.
-	 * 
-	 * @param mixed $offset
-	 */
-	public function offsetExists($offset)
-	{
-		return $this->has($offset);
-	}
-	
-	/**
-	 * Alias of get().
-	 * 
-	 * ArrayAccess interface.
-	 * 
-	 * @param mixed $offset
-	 */
-	public function offsetGet($offset)
-	{
-		return $this->get($offset);
-	}
-	
-	/**
-	 * Alias of insert(), returns Notice if offset is missing
+	 * Alias of insert(). Unlike Maps, $offset has to be provided for MultiMaps.
 	 * 
 	 * ArrayAccess interface.
 	 * 
 	 * @param mixed $offset
 	 * @param mixed $value
+	 * @return void
 	 */
 	public function offsetSet($offset, $value)
 	{
-		$offset ? $this->map[$offset][] = $value : trigger_error('Missing index');
-	}
-	
-	/**
-	 * Alias of erase().
-	 * 
-	 * ArrayAccess interface.
-	 * 
-	 * @param mixed $offset
-	 * @return array | removed array
-	 */
-	public function offsetUnset($offset)
-	{
-		return $this->erase($offset);
+		$this->insert($offset, $value);
 	}
 
 	/**
-	 * Removes value(might have more than once) under a key and
-	 * returns the count of removals. 
+	 * Removes a value associated with a key. 
 	 * 
 	 * @param mixed $key
 	 * @param mixed $value
-	 * @return integer | number of $value removed
+	 * @return mixed | false if not found
 	 */
-	public function remove($key, $value)
+	public function remove($value)
 	{
-		$count = 0;
-		foreach ($this->get($key) as $k => $v)
+		foreach ( $this->container as $key => $array )
 		{
-			if ($v === $value)
+			if ( ($id = array_search($value, $array, true)) !== false )
 			{
-				unset($this->map[$key][$k]);
-				++$count;
+				unset($this->container[$key][$id]);
+				
+				return $key;
 			}
 		}
-		return $count;
-	}
-
-	/**
-	 * Resets the MultiMap container's key iterator position.
-	 * 
-	 * @see setIteratorPosition($key)
-	 * @return void
-	 */
-	public function resetIteratorPosition()
-	{
-		$this->pos = null;
-	}
-	
-	/**
-	 * Sets the MultiMap container's key iterator position.
-	 * Useful when you want to iterate under a certain a key
-	 * position.
-	 * 
-	 * // After the following, the iterator will only include the
-	 * // array under the position specified
-	 * 
-	 * $map->setIteratorPosition('animals'); 
-	 * 
-	 * foreach ($map as $val)
-	 * {
-	 * 		echo $val;
-	 * }
-	 * 
-	 * //returns
-	 * cat cow dog fox ant
-	 * 
-	 * $map->getIteratorPosition(); // returns 'animals'
-	 * 
-	 * $map->resetIteratorPosition(); // reset position
-	 * 
-	 * $map->getIteratorPosition(); // now returns null
-	 * 
-	 * @param mixed $key | integer or string
-	 * @return void
-	 */
-	public function setIteratorPosition($key)
-	{
-		$this->pos = $key;	
-	}
-
-	/**
-	 * Returns the number of keys in the container, not all
-	 * the elements in multimap, 
-	 * 
-	 * @see count($key)
-	 * @return integer
-	 */
-	public function size()
-	{
-		return count($this->map);
+		return false;
 	}
 }

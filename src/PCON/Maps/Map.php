@@ -96,8 +96,12 @@ class Map implements MapInterface
 	public function filter(Closure $predicate)
 	{
 		$map = new Map();
-	
-		return $map->assign(array_filter($this->container, $predicate));
+		
+		foreach ( array_filter($this->container, $predicate) as $k => $v )
+		{
+			$map->insert($k, $v);
+		}
+		return $map;
 	}
 
 	/**

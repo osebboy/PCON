@@ -15,7 +15,7 @@
  */
 namespace PCON\Maps;
 
-use Closure;
+use Closure, ArrayIterator;
 
 /**
  * MultiMap is an associative container much like a Map container but allows
@@ -46,12 +46,12 @@ use Closure;
  * // we can position to 'animals'
  * $multimap->seek('animals');
  * 
- * // the following returns cat - cow - dog - fox - ant
+ * // iterator will return the animals
+ * // cat - cow - dog - fox - ant
  * foreach ( $multimap as $animal )
  * {
- * 	echo $animal . ' - ';
+ * 		echo $animal . ' - ';
  * }
- * // and the iterator position reset after the iteration
  * </code>
  * 
  * @author  Omercan Sebboy (www.osebboy.com)
@@ -104,7 +104,7 @@ class MultiMap extends Map
 			{
 				if ( $predicate($value) )
 				{
-					$filtered[$key] = $value;
+					$filtered->insert($key, $value);
 				}
 			}
 		}

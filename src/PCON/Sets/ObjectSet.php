@@ -16,6 +16,7 @@
 namespace PCON\Sets;
 
 use PCON\Interfaces\SetInterface;
+use PCON\Interfaces\ContainerInterface;
 use Closure, SplFixedArray;
 
 /**

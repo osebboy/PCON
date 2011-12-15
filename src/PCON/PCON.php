@@ -18,12 +18,12 @@
  * Class map.
  */
 return array(
-	'PCON\\Interfaces\\ContainerInterface'	=> 'PCON/Interfaces\ContainerInterface.php',
-	'PCON\\Interfaces\\ListInterface'	=> 'PCON/Interfaces\ListInterface.php',
-	'PCON\\Interfaces\\MapInterface'	=> 'PCON/Interfaces\MapInterface.php',
-	'PCON\\Interfaces\\Pcon'		=> 'PCON/Interfaces\Pcon.php',
-	'PCON\\Interfaces\\SetInterface'	=> 'PCON/Interfaces\SetInterface.php',
-	'PCON\\Interfaces\\VectorInterface'	=> 'PCON/Interfaces\VectorInterface.php',
+	'PCON\\Interfaces\\ContainerInterface'	=> 'PCON/Interfaces/ContainerInterface.php',
+	'PCON\\Interfaces\\ListInterface'	=> 'PCON/Interfaces/ListInterface.php',
+	'PCON\\Interfaces\\MapInterface'	=> 'PCON/Interfaces/MapInterface.php',
+	'PCON\\Interfaces\\Pcon'		=> 'PCON/Interfaces/Pcon.php',
+	'PCON\\Interfaces\\SetInterface'	=> 'PCON/Interfaces/SetInterface.php',
+	'PCON\\Interfaces\\VectorInterface'	=> 'PCON/Interfaces/VectorInterface.php',
 	'PCON\\Maps\\Map' 			=> 'PCON/Maps/Map.php',
 	'PCON\\Maps\\MultiMap'	 		=> 'PCON/Maps/MultiMap.php',
 	'PCON\\Sequence\\Deque'			=> 'PCON/Sequence/Deque.php',

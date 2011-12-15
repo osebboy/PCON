@@ -26,6 +26,7 @@ use Closure;
 interface SetInterface extends ContainerInterface
 {
 	// modifiers
+	public function assign($args);
 	public function erase($value);
 	public function insert($value);
 	

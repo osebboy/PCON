@@ -2,28 +2,27 @@
 /**
  * PCON: PHP Containers.
  * 
- * Copyright (c) 2011, Omercan Sebboy <osebboy@gmail.com>.
+ * Copyright (c) 2011 - 2012, Omercan Sebboy <osebboy@gmail.com>.
  * All rights reserved.
  *
  * For the full copyright and license information, please view the LICENSE file 
  * that was distributed with this source code.
  *
  * @author     Omercan Sebboy (www.osebboy.com)
- * @package    PCON\Sets
- * @copyright  Copyright(c) 2011, Omercan Sebboy (osebboy@gmail.com)
+ * @copyright  Copyright(c) 2011 - 2012, Omercan Sebboy (osebboy@gmail.com)
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
- * @version    1.0
+ * @version    1.1
  */
 namespace PCON\Sets;
 
+use PCON\Interfaces\SetInterface;
 use Closure, SplFixedArray;
 
 /**
  * Object Set is a lightweight associative container that stores unique objects.
  * 
- * @see SetInterface
  * @author  Omercan Sebboy (www.osebboy.com)
- * @version 1.0
+ * @version 1.1
  */
 class ObjectSet implements SetInterface
 {
@@ -32,23 +31,26 @@ class ObjectSet implements SetInterface
 	 * 
 	 * @var array
 	 */
-	protected $set = array();
+	protected $container = array();
 	
 	/**
-	 * Build container with an array of objects, which removes
-	 * any objects in the set prior to inserting new objects.
+	 * Assign objects to the set.
 	 * 
 	 * @see insert()
 	 * @param  array $array
-	 * @return void
+	 * @return ObjectSet | $this
 	 */
-	public function build(array $array)
+	public function assign($args)
 	{
-		$this->set = array();
-		foreach ($array as $obj)
+		$args = is_array($args) ? $args : ($args instanceof ContainerInterface ? $args->toArray() : func_get_args());
+		
+		$this->clear();
+		
+		foreach ( $args as $k => $v )
 		{
-			$this->insert($obj);
+			$this->insert($v);
 		}
+		return $this;
 	}
 	
 	/**
@@ -58,7 +60,7 @@ class ObjectSet implements SetInterface
 	 */
 	public function clear()
 	{
-		$this->set = array();
+		$this->container = array();
 	}
 	
 	/**
@@ -67,42 +69,41 @@ class ObjectSet implements SetInterface
 	 * @param  object $value 
 	 * @return boolean
 	 */
-	public function contains($value)
+	public function count($value)
 	{
-		return isset($this->set[spl_object_hash($value)]);
+		return (int) isset($this->container[spl_object_hash($value)]);
+	}
+	
+	/**
+	 * Erase a value.
+	 *
+         * @param object
+	 * @return boolean | true if removed, false otherwise
+	 */
+	public function erase($value)
+	{
+		$h = spl_object_hash($value);
+		
+		if ( isset($this->container[$h]) )
+		{
+			unset($this->container[$h]);
+			
+			return true;
+		}
+		return false;
 	}
 
 	/**
-	 * Runs a predicate on the set objects and finds the objects
-	 * that satisfy the predicate.
-	 * 
-	 *  $obj1 = new \stdClass();
-	 *  $obj1->name = 'cat';
-	 *  
-	 *	$obj2 = new \stdClass();
-	 *	$obj2->name = 'cow';
-	 *
-	 *	$obj3 = new \stdClass();
-	 *	$obj3->name = 'fox';
-	 *
-	 *	$obj4 = new \stdClass();
-	 *	$obj4->name = 'ant';
-	 *	
-	 *	// function to check if object is instance of stdClass and 
-	 *  // the letter 'o' exists in its name
-	 *	$p = function($object) {
-	 *		return ($object instanceOf \stdClass && 
-	 *				stripos($object->name, 'o') !== false);
-	 *	};
-	 * 
-	 * $this->find($p); // returns $obj2 and $obj3
+	 * Filter the set with the given predicate.
 	 * 
 	 * @param  Closure $predicate
 	 * @return array
 	 */
-	public function find(Closure $predicate)
+	public function filter(Closure $predicate)
 	{
-		return array_filter($this->set, $predicate);
+		$set = new ObjectSet();
+		
+		return $set->assign(array_filter($this->container, $predicate));
 	}
 	
 	/**
@@ -112,11 +113,11 @@ class ObjectSet implements SetInterface
 	 */
 	public function getIterator()
 	{
-		return SplFixedArray::fromArray(array_values($this->set));
+		return SplFixedArray::fromArray(array_values($this->container));
 	}
 	
 	/**
-	 * Inserts an object to the set, 0(1) complexity.
+	 * Inserts an object to the se.
 	 * 
 	 * @throws E_USER_WARNING if $value is not an object
 	 * @param  object $value
@@ -124,11 +125,13 @@ class ObjectSet implements SetInterface
 	 */
 	public function insert($value)
 	{
-		if (!is_object($value))
+		if ( !is_object($value) )
 		{
 			return trigger_error('ObjectSet expects value to be object', E_USER_WARNING);
 		}
-		$this->set[spl_object_hash($value)] = $value;
+		$this->container[spl_object_hash($value)] = $value;
+
+		return $this;
 	}
 
 	/**
@@ -138,24 +141,7 @@ class ObjectSet implements SetInterface
 	 */
 	public function isEmpty()
 	{
-		return !$this->set;
-	}
-
-	/**
-	 * Removes an object from the set.
-	 * 
-	 * @param  object $value
-	 * @return boolean | false if cannot remove, true otherwise
-	 */
-	public function remove($value)
-	{
-		$h = spl_object_hash($value);
-		if (isset($this->set[$h]))
-		{
-			unset($this->set[$h]);
-			return true;
-		}	
-		return false;
+		return !$this->container;
 	}
 
 	/**
@@ -165,9 +151,17 @@ class ObjectSet implements SetInterface
 	 */
 	public function size()
 	{
-		return (int) count($this->set);
+		return count($this->container);
 	}
 
+	/**
+	 * 
+	 */
+	public function sort(Closure $comp)
+	{
+		return uasort($comp, $this->container);
+	}
+	
 	/**
 	 * Set to array.
 	 * 
@@ -175,6 +169,6 @@ class ObjectSet implements SetInterface
 	 */
 	public function toArray()
 	{
-		return $this->set;
+		return $this->container;
 	}
 }

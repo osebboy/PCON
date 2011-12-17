@@ -1,0 +1,31 @@
+12/14
+- Introduced PCON\Interfaces namespace
+	- Pcon and ContainerInterface added - all containers implement either one
+	- ContainerInterface includes 2 new methods
+		- filter()
+		- toArray()
+	- MapInterface, SetInterface, ListInterface API enhanced
+		
+- A unified 'property' introduced. Now each container has the same property 'container'.
+	NOTE: This would make it possible to adapt PCON to Traits with PHP 5.4.
+
+- Removed: PCON\Maps\SplObjectMap, PCON\Sets\StringSet
+	NOTE: PCON\Sequence\Vector will also be removed in v1.2. These will be replaced with better abstract types.
+ 
+- PCON\Sequence\Liste
+    - New
+        - filter()
+        - merge()
+        - remove_if()
+        - toArray()
+        - unique()
+    - Fix / refactor
+        - assign()
+        - erase()
+        - insert()
+        - push_back()
+        - remove()
+        - reverse()
+        - sort()
+
+- Refactor + API changes in namespaces PCON\Maps, PCON\Sets

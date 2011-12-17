@@ -16,30 +16,30 @@
 namespace PCON\Sets;
 
 /**
- * Object Set is an associative container that stores unique objects.
+ * Integer Set is an associative container that stores unique integer values.
  * 
  * @author  Omercan Sebboy (www.osebboy.com)
  * @version 1.1
  */
-class ObjectSet extends SetAbstract
+class IntegerSet extends SetAbstract
 {
 	/**
-	 * Object hash.
+	 * Integer hash.
 	 *
 	 * @return string
 	 */
 	protected function hash($value)
 	{
-		return spl_object_hash($value);
+		return md5($value);
 	}
 
 	/**
-	 * Is the value object?
+	 * Is the value integer?
 	 *
 	 * @return boolean
 	 */
 	protected function isValid($value)
 	{
-		return is_object($value);
+		return is_int($value);
 	}
 }

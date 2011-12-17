@@ -16,17 +16,27 @@
 namespace PCON\Sets;
 
 use PCON\Interfaces\SetInterface;
-use Closure;
 
 /**
- * Performs Set operations on the SetInterface objects. Generally, these operations
- * return a new Set object with their return values. In this class, this idea was
- * not implemented because of performance reasons. Instead, the operations returns
- * plain PHP arrays with the return values in it. If Set object is needed in
- * return, then Set's build method can be utilized to create a new Set from array.
+ * Performs Set operations on the SetInterface instances. Generally, these 
+ * operations return a new instance of their respective Set classes. This idea 
+ * was not implemented to gain better performance and providing a convenience to 
+ * use the return values with built in array functions. The operations returns 
+ * plain PHP arrays. If a Set object is needed in return, then the assign() method 
+ * can be utilized to create a new Set from the returned array.
  * 
- * All operations are based on the fact that the values are hashed and entered as
- * their key in the container.
+ * <code>
+ * $set1 = new StringSet();
+ * $set->assign('cat', 'dog');
+ * 
+ * $set2 = new StringSet();
+ * $set2->assign('cow', 'fox');
+ * 
+ * $newSet = new StringSet();
+ * $newSet->assign( Operation::union($set1, $set2) );
+ * </code>
+ *
+ * All Operation methods are based on the hashed values of the elements.
  * 
  * @author  Omercan Sebboy (www.osebboy.com)
  * @version 1.1
@@ -50,7 +60,7 @@ class Operation
 	}
 	
 	/**
-	 * Returns the intersation between two sets.
+	 * Returns the intersection between two sets.
 	 * 
 	 * @param SetInterface $set1
 	 * @param SetInterface $set2

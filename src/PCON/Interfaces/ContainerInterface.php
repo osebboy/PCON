@@ -89,11 +89,11 @@ interface ContainerInterface extends Pcon
 	 * $list->assign('cat', 'dog');
 	 *  
 	 * $arr = array_map( 
-	 * 			function ($value) 
-	 * 			{ 
-	 * 				return strtoupper($value); 
-	 * 			},
-	 * 			$list->toArray();
+	 * 		function ($value) 
+	 * 		{ 
+	 * 			return strtoupper($value); 
+	 * 		},
+	 * 		$list->toArray();
 	 * );
 	 * 
 	 * $arr === array( 'CAT', 'DOG' ); // true

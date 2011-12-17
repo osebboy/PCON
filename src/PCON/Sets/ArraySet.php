@@ -16,30 +16,30 @@
 namespace PCON\Sets;
 
 /**
- * Object Set is an associative container that stores unique objects.
+ * Array Set is an associative container that stores unique arrays.
  * 
  * @author  Omercan Sebboy (www.osebboy.com)
  * @version 1.1
  */
-class ObjectSet extends SetAbstract
+class ArraySet extends SetAbstract
 {
 	/**
-	 * Object hash.
+	 * Array hash.
 	 *
 	 * @return string
 	 */
 	protected function hash($value)
 	{
-		return spl_object_hash($value);
+		return md5(serialize($value));
 	}
 
 	/**
-	 * Is the value object?
+	 * Is the value array?
 	 *
 	 * @return boolean
 	 */
 	protected function isValid($value)
 	{
-		return is_object($value);
+		return is_array($value);
 	}
 }

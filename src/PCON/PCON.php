@@ -31,6 +31,10 @@ return array(
 	'PCON\\Sequence\\Queue'			=> 'PCON/Sequence/Queue.php',
 	'PCON\\Sequence\\Stack'			=> 'PCON/Sequence/Stack.php',
 	'PCON\\Sequence\\Vector'		=> 'PCON/Sequence/Vector.php',
+	'PCON\\Sets\\SetAbstract'		=> 'PCON/Sets/SetAbstract.php',
+	'PCON\\Sets\\IntegerSet'		=> 'PCON/Sets/IntegerSet.php',
+	'PCON\\Sets\\StringSet'			=> 'PCON/Sets/StringSet.php',
+	'PCON\\Sets\\ArraySet'			=> 'PCON/Sets/ArraySet.php',
 	'PCON\\Sets\\ObjectSet'			=> 'PCON/Sets/ObjectSet.php',
 	'PCON\\Sets\\Operation'			=> 'PCON/Sets/Operation.php'
 );

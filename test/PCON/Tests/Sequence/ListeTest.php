@@ -18,6 +18,8 @@ namespace PCON\Tests\Sequence;
 
 use PCON\Sequence\Liste;
 
+require_once __DIR__ . '/../../TestHelper.php';
+
 /**
  * Liste Test
  * 
@@ -117,27 +119,7 @@ class ListeTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(6, $this->list->size());
 		$this->assertEquals('foo', $this->list->pop_front());
 	}
-	
-	public function testRemove()
-	{
-		$this->list->remove('ant');
-		$this->list->remove('cat');
-		foreach ($this->list as $value)
-		{
-			$this->assertFalse($value === 'ant');
-			$this->assertFalse($value === 'cat');
-		}
-		$this->assertEquals(3, $this->list->size());
-	}
-	
-	public function testRemoveMultipleSameValues()
-	{
-		$this->list->push_back('foo');
-		$this->list->push_back('foo');
-		$this->list->push_front('foo');
-		// remove returns the number of removals of the value
-		$this->assertEquals(3, $this->list->remove('foo'));
-	}
+
 	
 	public function testReverse()
 	{

@@ -12,14 +12,15 @@
     	- sort()
     	- hash()
     	- isValid()
- 	- Removed
- 		- build()
- 		- contains()
- 		- find()
- 		- remove()
+     - Removed
+ 	- build()
+ 	- contains()
+ 	- find()
+ 	- remove()
 - Moved Operation::sort() method to individual Sets
 - Comments modification under PCON\Sets namespace
 - Modified class map
+- Test modification (underway)
 
 
 12/14

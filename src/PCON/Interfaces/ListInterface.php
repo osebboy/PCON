@@ -41,7 +41,6 @@ interface ListInterface extends ContainerInterface
 	public function remove_if(Closure $predicate);
 	
 	// operations
-	public function filter(Closure $predicate);
 	public function reverse($preserve_keys = true);
 	public function sort(Closure $comp = null);
 	public function unique();

@@ -18,6 +18,8 @@ namespace PCON\Tests\Sequence;
 
 use PCON\Sequence\Vector;
 
+require_once __DIR__ . '/../../TestHelper.php';
+
 /**
  * Vector Test
  * 
@@ -71,94 +73,9 @@ class VectorTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(0, $this->vec->size());
 	}
 	
-	public function testErase()
-	{
-		// current 0 => 'ant', 1 => 'cat' , 2 => 'dog' - size 3
-		$this->assertEquals(3, $this->vec->size());
-		
-		// remove index 1, erase returns the removed value in array (keys not preserved)
-		$this->assertEquals(array('cat'), $this->vec->erase(1));
-		
-		// now indices are 0 => 'ant', 1 => 'dog'
-		// the gap between the indices should close, previous index assoc. is lost
-		$this->assertEquals('ant', $this->vec[0]);
-		$this->assertEquals('dog', $this->vec[1]); // it was cat before
-		
-		// now index key -> 2 should not exist
-		$this->assertFalse($this->vec->offsetExists(2));
-		
-		// the number of elements in the vector now should be 2
-		$this->assertEquals(2, $this->vec->size());
-	}
-	
-	public function testEraseWithLength()
-	{	
-		// add 2 more elements
-		$this->vec->push_back('foo');
-		$this->vec->push_back('bar');
-		// current 0=>'ant', 1=>'cat' , 2=>'dog', 3=>'foo', 4=>'bar'
-		$this->assertEquals(5, $this->vec->size()); // size now should be 5
-		
-		// erase starting from index 1 until index 3 which is length 3
-		// erase returns the removed values in a new array so
-		// shold return array('cat', 'dog', 'foo')
-		$this->assertEquals(array('cat', 'dog', 'foo'), $this->vec->erase(1, 3));
-		
-		// now the size(number of elements) of the container should be 2
-		$this->assertEquals(2, $this->vec->size());
-		
-		// the indices should be rearranged
-		// 0 => 'ant', 1 => 'bar'
-		$this->assertEquals('ant', $this->vec[0]);
-		$this->assertEquals('bar', $this->vec[1]);
-		
-		// there should not be any index after index 1
-		$this->assertFalse($this->vec->offsetExists(2));
-	}
-	
-	public function testEraseWithInvalidIndex()
-	{
-		// current 0 => 'ant', 1 => 'cat' , 2 => 'dog' - size 3
-		// erase an index that does not exist should not make any
-		// change in the container
-		$this->vec->erase(100);
-		$this->assertEquals(3, $this->vec->size());
-		// container should not add index 100 if not exist
-		$this->assertFalse($this->vec->offsetExists(100));
-	}
-	
 	public function testFront()
 	{
 		$this->assertEquals('ant', $this->vec->front()); // value from beginning
-	}
-	
-	public function testInsert_at()
-	{
-		// current 0 => 'ant', 1 => 'cat' , 2 => 'dog'
-		$this->assertEquals(3, $this->vec->size()); // verify
-		
-		// insert 'foo' at the index 1
-		// insert_at(1, 'foo')
-		// now it should be 0 => 'ant', 1 => 'foo' , 2 => 'cat', 'dog'
-		$this->vec->insert_at(1, 'foo');
-		$this->assertEquals(4, $this->vec->size()); // now size is 4
-		$this->assertEquals('ant', $this->vec[0]); // 0 => ant
-		$this->assertEquals('foo', $this->vec[1]); // 1 => foo
-		$this->assertEquals('cat', $this->vec[2]); // 2 => cat
-		$this->assertEquals('dog', $this->vec[3]); // 3 => dog
-		$this->assertFalse($this->vec->offsetExists(4)); // no index after 3
-	}
-	
-	public function testInsert_atWithIndexThatDoesNotExist()
-	{
-		// current 0 => 'ant', 1 => 'cat' , 2 => 'dog'
-		$this->assertEquals(3, $this->vec->size()); // verify
-		
-		// insert with an invalid index which does not exist in the container
-		// 100 => foo
-		$this->vec->insert_at(100, 'foo');
-		// this adds foo at the end of the container with index 3
-		$this->assertEquals('foo', $this->vec[3]);
 	}
 	
 	public function testIsEmpty()

@@ -18,6 +18,8 @@ namespace PCON\Tests\Maps;
 
 use PCON\Maps\MultiMap;
 
+require_once __DIR__ . '/../../TestHelper.php';
+
 /**
  * MultiMap Test
  * 
@@ -54,47 +56,19 @@ class MultiMapTest extends \PHPUnit_Framework_TestCase
 	public function testEraseShouldRemoveKeyAndItsElements()
 	{
 		$this->multi->erase('animals');
-		$this->assertFalse($this->multi->has('animals'));
+		$this->assertFalse($this->multi->offsetExists('animals'));
 	}
-	
-	public function testFilterShouldReturnFilteredElementsUnderAKey()
-	{
-		$p = function($value) 
-		{
-	 		// return all values with letter 'o' in it
-	 		return stripos($value, 'o') !== false; 			
-	 	};
-		$filtered = array(1 => 'cow', 2 => 'dog', 3 => 'fox');
-		$this->assertEquals($filtered, $this->multi->filter('animals', $p));
-	}
-	
-	public function testGetShouldReturnArrayOfValuesUnderGivenKey()
-	{
-		$this->assertEquals(array('cat', 'cow', 'dog', 'fox'), $this->multi->get('animals'));
-	}
-	
-	public function testGetIteratorPositionShouldReturnKeyItaretorPosition()
-	{
-		$this->assertEquals(null, $this->multi->getIteratorPosition());
-		$this->multi->setIteratorPosition('animals');
-		$this->assertEquals('animals', $this->multi->getIteratorPosition());
-		$this->multi->resetIteratorPosition();
-	}
-	
-	public function testHasShouldCheckExistenceOfKey()
-	{
-		$this->assertTrue($this->multi->has('animals'));
-	}
+
 	
 	public function testInsertShouldAddDifferentElementsWithTheSameKey()
 	{
-		$values = $this->multi->get('animals');
+		$values = $this->multi->offsetGet('animals');
 		$this->multi->clear();
 		foreach ($values as $value)
 		{
 			$this->multi->insert('animals', $value);
 		}
-		$this->assertEquals(array('cat', 'cow', 'dog', 'fox'), $this->multi->get('animals'));
+		$this->assertEquals(array('cat', 'cow', 'dog', 'fox'), $this->multi->offsetGet('animals'));
 	}
 	
 	public function testIsEmptyShouldReturnBoolean()
@@ -102,32 +76,6 @@ class MultiMapTest extends \PHPUnit_Framework_TestCase
 		$this->assertFalse($this->multi->isEmpty());
 		$this->multi->clear();
 		$this->assertTrue($this->multi->isEmpty());
-	}
-	
-	public function testKeysShouldReturnTheKeysOfMultiMap()
-	{
-		$this->assertEquals(array('animals'), $this->multi->keys());
-	}
-	
-	public function testRemoveShouldRemoveValueUnderKey()
-	{
-		$this->multi->remove('animals', 'cat');
-		$this->assertTrue($this->multi->count('animals') === 3);
-		$this->multi->remove('animals', 'dog');
-		$this->assertTrue($this->multi->count('animals') === 2);
-	}
-	
-	public function testResetIteratorPositionShouldResetKeyIteratorToNull()
-	{
-		$this->multi->setIteratorPosition('animals');
-		$this->multi->resetIteratorPosition();
-		$this->assertTrue($this->multi->getIteratorPosition() === null);
-	}
-	
-	public function testSetIteratorPositionShouldSetTheIteratorPositionToKey()
-	{
-		$this->multi->setIteratorPosition('animals');
-		$this->assertEquals('animals', $this->multi->getIteratorPosition());
 	}
 	
 	public function testSizeShouldReturnTheNumnerOfKeysInMap()

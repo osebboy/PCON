@@ -19,6 +19,8 @@ namespace PCON\Tests\Sets;
 use PCON\Sets\Operation;
 use PCON\Sets\StringSet;
 
+require_once __DIR__ . '/../../TestHelper.php';
+
 /**
  * Operation Test
  * 
@@ -30,10 +32,10 @@ class OperationTest extends \PHPUnit_Framework_TestCase
 	protected function setUp() 
 	{
 		$this->set1 = new StringSet();
-		$this->set1->build(array('ant', 'cat', 'cow', 'dog', 'fox'));
+		$this->set1->assign(array('ant', 'cat', 'cow', 'dog', 'fox'));
 		
 		$this->set2 = new StringSet();
-		$this->set2->build(array('ant', 'cat', 'one', 'two'));
+		$this->set2->assign(array('ant', 'cat', 'one', 'two'));
 	}
 
 	protected function tearDown() 
@@ -87,37 +89,5 @@ class OperationTest extends \PHPUnit_Framework_TestCase
 		$union = $this->set1->toArray() + $this->set2->toArray();
 		$this->assertEquals($union, Operation::union($this->set1, $this->set2));
 		$this->assertEquals($union, Operation::union($this->set2, $this->set1));
-	}
-	
-	public function testSort()
-	{
-		// change set1 sort
-		$this->set1->clear();
-		$this->assertTrue($this->set1->isEmpty());
-		
-		// same strings, different sequence
-		$this->set1->build(array('cat', 'fox', 'ant', 'dog', 'cow'));
-		
-		// following function sorts the set from lower to higher (a, b, c...)
-		$comp = function ($a, $b)
-		{
-		    if ($a == $b) {
-		        return 0;
-		    }
-		    return ($a < $b) ? -1 : 1;
-		};
-		
-		// sort the set
-		Operation::sort($this->set1, $comp);
-		
-		// get the values
-		$sorted = array_values($this->set1->toArray());
-		
-		// test sorted set
-		$this->assertEquals('ant', $sorted[0]);
-		$this->assertEquals('cat', $sorted[1]);
-		$this->assertEquals('cow', $sorted[2]);
-		$this->assertEquals('dog', $sorted[3]);
-		$this->assertEquals('fox', $sorted[4]);
 	}
 }

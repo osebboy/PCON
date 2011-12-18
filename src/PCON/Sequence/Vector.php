@@ -295,7 +295,7 @@ class Vector implements VectorInterface
 	 */
 	public function size()
 	{
-		return count($this->vector);
+		return count($this->container);
 	}
 
 	/**

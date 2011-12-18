@@ -18,6 +18,8 @@ namespace PCON\Tests\Sequence;
 
 use PCON\Sequence\Stack;
 
+require_once __DIR__ . '/../../TestHelper.php';
+
 /**
  * Stack Test
  * 

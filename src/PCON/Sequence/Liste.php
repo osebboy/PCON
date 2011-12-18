@@ -242,7 +242,7 @@ class Liste implements ListInterface
 	 */
 	public function remove($value)
 	{
-		return $this->remove_if( function ($v) { return $v === $value; } );
+		return $this->remove_if( function ($v) use($value) { return $v === $value; } );
 	}
 
 	/**

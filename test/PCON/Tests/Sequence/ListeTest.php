@@ -17,7 +17,6 @@
 namespace PCON\Tests\Sequence;
 
 use PCON\Sequence\Liste;
-
 require_once __DIR__ . '/../../TestHelper.php';
 
 /**
@@ -34,26 +33,37 @@ class ListeTest extends \PHPUnit_Framework_TestCase
 		$this->list->assign(array('ant', 'cat', 'cow', 'dog', 'fox'));
 	}
 
+	public function getFunction()
+	{
+		$predicate = function($v)
+		{
+			return in_array($v, array('cat', 'dog'), true);
+		};
+		return $predicate;
+	}
 	protected function tearDown() 
 	{
 	}
 
-	public function testAssign()
-	{
+	public function testAssignArray()
+	{		
 		$this->list->assign(array('foo', 'bar'));
-		$this->assertTrue( ! $this->list->isEmpty());
-		
-		// make sure all initial values are removed
-		// initial count of elements is 5 
-		// after foo & bar should be 2 now
 		$this->assertEquals(2, $this->list->size()); 
 	}
 	
-	public function testAssignValidator()
+	public function testAssignContainerInterfaceIntance()
 	{
-		// throw warning if key is string
-		$this->setExpectedException('PHPUnit_Framework_Error');
-		$this->list->assign(array('foo' => 'bar'));
+		$set = new Liste();
+		$set->assign(array('foo', 'bar'));
+
+		$this->list->assign($set);
+		$this->assertEquals(2, $this->list->size());
+	}
+
+	public function testAssignArguments()
+	{
+		$this->list->assign('cat', 'dog', 'fox');
+		$this->assertEquals(3, $this->list->size());
 	}
 
 	public function testBack()
@@ -63,35 +73,61 @@ class ListeTest extends \PHPUnit_Framework_TestCase
 	
 	public function testClear()
 	{
+		$this->assertEquals(5, $this->list->size());
 		$this->list->clear();
-		$this->assertTrue($this->list->isEmpty());
+		$this->assertTrue($this->list->size() === 0);
 	}
 	
 	public function testErase()
 	{
+		$this->assertEquals(5, $this->list->size());
 		$this->list->erase(0);
 		$this->assertEquals(4, $this->list->size());
-		// erase should return removed value
-		$this->assertEquals('dog', $this->list->erase(3));
+	}
+
+	public function testEraseShouldReturnRemovedValue()
+	{
+		$this->assertEquals('ant', $this->list->erase(0));	
+	}
+
+	public function testFilterShouldReturnNewList()
+	{
+		$this->assertTrue($this->list->filter($this->getfunction()) instanceof Liste);
+	}
+
+	public function testFilterShouldReturnListWithNewValues()
+	{
+		$this->assertEquals(2, $this->list->filter($this->getFunction())->size());
 	}
 	
 	public function testFront()
 	{
 		$this->assertEquals('ant', $this->list->front());
 	}
-	
-	public function testInsert()
+
+	public function testInsertAcceptsOnlyIntegerValues()
 	{
+		$this->setExpectedException('PHPUnit_Framework_Error');
+		$this->list->insert('foo', 'bar');
+
 		$this->list->insert(10, 'test');
 		$this->assertEquals(6, $this->list->size());
-		$this->assertEquals('test', $this->list->erase(10));
 	}
-	
+
 	public function testIsEmpty()
 	{
 		$this->assertFalse($this->list->isEmpty());
 		$this->list->clear();
 		$this->assertTrue($this->list->isEmpty());
+	}
+
+	public function testMergeShouldAddNewValues()
+	{
+		$list2 = new Liste();
+		$list2->assign('foo', 'bar');
+
+		$this->list->merge($list2);
+		$this->assertEquals(7, $this->list->size());
 	}
 	
 	public function testPop_back()
@@ -120,7 +156,18 @@ class ListeTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('foo', $this->list->pop_front());
 	}
 
-	
+	public function testRemove()
+	{
+		$this->list->remove('ant');
+		$this->assertEquals(4, $this->list->size());
+	}
+
+	public function testRemoveShouldReturnNumberOfRemovals()
+	{
+		$this->list->insert(10, 'ant')->insert(20, 'ant'); 
+		$this->assertEquals(3, $this->list->remove('ant'));
+	}
+
 	public function testReverse()
 	{
 		$this->list->reverse();

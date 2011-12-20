@@ -12,18 +12,17 @@
  * @package    PCON\Tests\Sequence
  * @copyright  Copyright(c) 2011, Omercan Sebboy (osebboy@gmail.com)
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
- * @version    1.0
+ * @version    1.1
  */
 namespace PCON\Tests\Sequence;
 
 use PCON\Sequence\Liste;
-require_once __DIR__ . '/../../TestHelper.php';
 
 /**
  * Liste Test
  * 
  * @author  Omercan Sebboy (www.osebboy.com)
- * @version 1.0
+ * @version 1.1
  */
 class ListeTest extends \PHPUnit_Framework_TestCase 
 {
@@ -174,9 +173,54 @@ class ListeTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('fox', $this->list->pop_front());
 		$this->assertEquals('ant', $this->list->pop_back());
 	}
+
+	public function testSortShouldReturnTrueIfSorted()
+	{
+		$this->list->assign(array(10 => 'foo', 2 => 'zip',  5 => 'bar'));
+		$this->assertEquals(true, $this->list->sort());
+	}
+
+	public function testSortWithoutComparisonShouldSortKeysInAscendingOrder()
+	{
+		$this->list->assign(array(10 => 'foo', 2 => 'zip',  5 => 'bar'));
+		$this->list->sort();
+		$this->assertEquals('zip', $this->list->front()); // first
+		$this->assertEquals('foo', $this->list->back()); // last
+	}
+
+	public function testSortShouldSortValuesWithComparisonFunction()
+	{
+		$this->list->assign(array(10 => 'foo', 2 => 'zip',  5 => 'bar'));
+		$comp = function ($a, $b) 
+	  	{
+    	  		if ($a == $b) 
+	  		{
+          			return 0;
+    	  		}
+    	  		return ($a < $b) ? -1 : 1;
+	   	};
+		$this->list->sort($comp);
+		// after sort, the list sequence is bar, foo, zip
+		$this->assertEquals('bar', $this->list->front()); // first
+		$this->assertEquals('zip', $this->list->back()); // last
+
+		// sorthing values with a comparison function should preserve keys
+		$this->assertEquals(array('5' => 'bar', 10 => 'foo', 2 => 'zip'), $this->list->toArray());
+	}
+
 	
 	public function testSize()
 	{
 		$this->assertEquals(5, $this->list->size());
+	}
+
+	public function testUniqueShouldReturnUniqueValuesInANewList()
+	{
+		$this->list->assign('foo', 'bar', 'zip', 'zip', 'foo', 'bar');
+
+		$uniqueList = $this->list->unique();
+			
+		$this->assertTrue($uniqueList instanceof Liste);
+		$this->assertEquals(array('foo', 'bar', 'zip'), $uniqueList->toArray());
 	}
 }

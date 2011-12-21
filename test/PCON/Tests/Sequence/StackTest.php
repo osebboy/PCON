@@ -2,29 +2,26 @@
 /**
  * PCON: PHP Containers.
  * 
- * Copyright (c) 2011, Omercan Sebboy <osebboy@gmail.com>.
+ * Copyright (c) 2011 - 2012, Omercan Sebboy <osebboy@gmail.com>.
  * All rights reserved.
  *
  * For the full copyright and license information, please view the LICENSE file 
  * that was distributed with this source code.
  *
  * @author     Omercan Sebboy (www.osebboy.com)
- * @package    PCON\Tests\Sequence
- * @copyright  Copyright(c) 2011, Omercan Sebboy (osebboy@gmail.com)
+ * @copyright  Copyright(c) 2011 - 2012, Omercan Sebboy (osebboy@gmail.com)
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
- * @version    1.0
+ * @version    1.1
  */
 namespace PCON\Tests\Sequence;
 
 use PCON\Sequence\Stack;
 
-require_once __DIR__ . '/../../TestHelper.php';
-
 /**
  * Stack Test
  * 
  * @author  Omercan Sebboy (www.osebboy.com)
- * @version 1.0
+ * @version 1.1
  */
 class StackTest extends \PHPUnit_Framework_TestCase 
 {

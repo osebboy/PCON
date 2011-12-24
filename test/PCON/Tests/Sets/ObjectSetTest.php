@@ -2,55 +2,113 @@
 /**
  * PCON: PHP Containers.
  * 
- * Copyright (c) 2011, Omercan Sebboy <osebboy@gmail.com>.
+ * Copyright (c) 2011 - 2012, Omercan Sebboy <osebboy@gmail.com>.
  * All rights reserved.
  *
  * For the full copyright and license information, please view the LICENSE file 
  * that was distributed with this source code.
  *
  * @author     Omercan Sebboy (www.osebboy.com)
- * @package    PCON\Tests\Sets
- * @copyright  Copyright(c) 2011, Omercan Sebboy (osebboy@gmail.com)
+ * @copyright  Copyright(c) 2011 - 2012, Omercan Sebboy (osebboy@gmail.com)
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
- * @version    1.0
+ * @version    1.1
  */
 namespace PCON\Tests\Sets;
 
 use PCON\Sets\ObjectSet;
-
-require_once __DIR__ . '/../../TestHelper.php';
+use stdClass;
 
 /**
- * Objset Set Test
+ * ObjsetSet Test.
  * 
  * @author  Omercan Sebboy (www.osebboy.com)
- * @version 1.0
+ * @version 1.1
  */
 class ObjectSetTest extends \PHPUnit_Framework_TestCase 
 {
 	protected function setUp() 
 	{
 		$this->set = new ObjectSet();
+
+		// objects to use
+		$this->a   = new stdClass();
+		$this->b   = new stdClass();
+		$this->c   = new stdClass();
 	}
 
 	protected function tearDown() 
 	{
 	}
+	
+
+	public function testAssignArray()
+	{		
+		$this->set->assign(array($this->a, $this->b, $this->c));
+		$this->assertEquals(3, $this->set->size()); 
+	}
+	
+	public function testAssignContainerInterfaceIntance()
+	{
+		$set = new ObjectSet();
+		$set->assign(array($this->a, $this->b, $this->c));
+		$this->assertEquals(3, $set->size());
+
+		$this->set->assign($set);	
+		$this->assertEquals(3, $this->set->size());
+	}
+
+	public function testAssignArguments()
+	{
+		$this->set->assign($this->a, $this->b, $this->c);
+		$this->assertEquals(3, $this->set->size());
+	}
 
 	public function testClear()
 	{
-		$array = array(new \stdClass(), new \stdClass());
-		$this->set->assign($array);
-		$this->assertEquals(2, $this->set->size());
+		$this->set->assign($this->a, $this->b, $this->c);
+		$this->assertEquals(3, $this->set->size());
 		$this->set->clear();
 		$this->assertEquals(0, $this->set->size());
+	}
+
+	public function testCountShouldReturnTheCountOfElement()
+	{
+		// sets always return 1 or 0 because sets hold unique elements
+		$this->set->assign($this->a, $this->b);
+		$this->assertEquals(1, $this->set->count($this->a));
+		$this->assertEquals(0, $this->set->count($this->c));
+	}
+
+	public function testEraseShouldEraseElement()
+	{
+		$this->set->assign($this->a);
+		$this->assertEquals(1, $this->set->count($this->a));
+		$this->set->erase($this->a);
+		$this->assertEquals(0, $this->set->count($this->a));
+	}
+
+	public function testFilter()
+	{
+		$this->set->assign($this->a, $this->b, $this->c);
+		$predicate = function($v)
+		{
+			return in_array($v, array($this->a, $this->b), true);
+		};
+		$filtered = $this->set->filter($predicate);
+		// should return own type of Set
+		$this->assertTrue($filtered instanceof \PCON\Sets\ObjectSet);
+
+		// $filtered should include $this->a, $this->b but not $this->c
+		$this->assertEquals(2, $filtered->size());
+		$this->assertTrue($filtered->count($this->a) === 1);
+		$this->assertTrue($filtered->count($this->c) === 0);
+		$this->assertTrue($filtered->count($this->b) === 1);
 	}
 	
 	public function testInsert()
 	{
-		$obj1 = new \stdClass();
-		$this->set->insert($obj1);
-		$this->assertEquals(1, $this->set->size());
+		$this->set->insert($this->a)->insert($this->b);
+		$this->assertEquals(2, $this->set->size());
 	}
 	
 	public function testInsertShouldThrowNoticeIfNotObject()
@@ -61,10 +119,9 @@ class ObjectSetTest extends \PHPUnit_Framework_TestCase
 	
 	public function testInsertShouldNotAddTheSameObjectSecondTime()
 	{
-		$obj1 = new \stdClass();
-		$this->set->insert($obj1);
+		$this->set->insert($this->a);
 		$this->assertEquals(1, $this->set->size());
-		$this->set->insert($obj1);
+		$this->set->insert($this->a)->insert($this->a);
 		$this->assertEquals(1, $this->set->size());
 	}
 
@@ -84,5 +141,32 @@ class ObjectSetTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(0, $this->set->size());
 		$this->set->insert(new \stdClass());
 		$this->assertEquals(1, $this->set->size());
+	}
+
+	public function testSort()
+	{
+		$this->a->name = 'cat';
+		$this->b->name = 'fox';
+		$this->c->name = 'dog';
+		$this->set->assign($this->c, $this->a, $this->b);
+		$this->assertEquals(3, $this->set->size()); // we have 3 objects added
+
+		// the following sorts the set according to it's name
+		$comp = function ($a, $b) 
+	  	{
+    	  		if ($a->name == $b->name) 
+	  		{
+          			return 0;
+    	  		}
+    	  		return ($a->name < $b->name) ? -1 : 1;
+	   	};
+		// before sort, set has $this->c, $this->a, $this->b
+		$this->set->sort($comp);
+		// after sort, the set container is sorted as $this->a, $this->c, $this->b
+		$array = $this->set->toArray();
+
+		$this->assertEquals($this->a, array_shift($array));
+		$this->assertEquals($this->b, array_pop($array));
+
 	}
 }

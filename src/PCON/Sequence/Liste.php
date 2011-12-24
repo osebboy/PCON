@@ -15,7 +15,6 @@
  */
 namespace PCON\Sequence;
 
-use PCON\Interfaces\ContainerInterface;
 use PCON\Interfaces\ListInterface;
 use Closure, ArrayIterator;
 
@@ -64,7 +63,7 @@ class Liste implements ListInterface
 	 */
 	public function assign($args)
 	{
-		$args = is_array($args) ? $args : ($args instanceof ContainerInterface ? $args->toArray() : func_get_args());
+		$args = is_array($args) ? $args : ($args instanceof \PCON\Interfaces\ContainerInterface ? $args->toArray() : func_get_args());
 		
 		$this->clear();
 		

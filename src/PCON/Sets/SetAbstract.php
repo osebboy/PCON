@@ -15,7 +15,6 @@
  */
 namespace PCON\Sets;
 
-use PCON\Interfaces\ContainerInteface;
 use PCON\Interfaces\SetInterface;
 use Closure, SplFixedArray;
 
@@ -60,12 +59,12 @@ abstract class SetAbstract implements SetInterface
 	 * @return $this
 	 */
 	public function assign($args)
-	{
-		$args = is_array($args) ? $args : ($args instanceof ContainerInterface ? $args->toArray() : func_get_args());
-		
+	{		
+		$args = is_array($args) ? $args : ($args instanceof \PCON\Interfaces\ContainerInterface ? $args->toArray() : func_get_args());
+
 		$this->clear();
 		
-		foreach ( $args as $k => $v )
+		foreach ( $args as $v )
 		{
 			$this->insert($v);
 		}
@@ -121,7 +120,7 @@ abstract class SetAbstract implements SetInterface
 	 */
 	public function filter(Closure $predicate)
 	{
-		$set = new self();
+		$set = new static();
 		
 		return $set->assign(array_filter($this->container, $predicate));
 	}
@@ -181,7 +180,7 @@ abstract class SetAbstract implements SetInterface
 	 */
 	public function sort(Closure $comp)
 	{
-		return uasort($comp, $this->container);
+		return uasort($this->container, $comp);
 	}
 	
 	/**

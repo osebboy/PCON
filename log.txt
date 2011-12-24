@@ -1,3 +1,6 @@
+12/23
+- PCON\Sets tests completed.
+
 12/20
 - PCON\Sequence tests completed.
 

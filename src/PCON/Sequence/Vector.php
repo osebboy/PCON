@@ -48,7 +48,7 @@ class Vector implements VectorInterface
 	 */
 	public function assign($args)
 	{
-		$args = is_array($args) ? $args : ($args instanceof ContainerInterface ? $args->toArray() : func_get_args());
+		$args = is_array($args) ? $args : ($args instanceof \PCON\Interfaces\ContainerInterface ? $args->toArray() : func_get_args());
 
 		$this->container = array_values($args);
 

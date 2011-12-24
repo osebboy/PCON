@@ -16,6 +16,7 @@
 namespace PCON\Interfaces;
 
 use Closure;
+use PCON\Interfaces\ContainerInterface;
 
 /**
  * Set Interface.

@@ -182,9 +182,9 @@ class Liste implements ListInterface
 	 *
 	 * @return Liste 
 	 */
-	public function merge(ListInterface $container)
+	public function merge(ListInterface $liste)
 	{
-		$this->container = array_merge($this->container, $container->toArray());
+		$this->container = array_merge($this->container, $liste->toArray());
 
 		return $this;
 	}

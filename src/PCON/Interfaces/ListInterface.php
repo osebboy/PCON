@@ -33,6 +33,7 @@ interface ListInterface extends ContainerInterface
 	public function assign($args);
 	public function erase($index);
 	public function insert($index, $value);
+	public function merge(ListInterface $liste);
 	public function pop_back();
 	public function pop_front();
 	public function push_back($value);

@@ -44,6 +44,7 @@ require_once  __DIR__ . '/Interfaces/ListInterface.php';
 require_once  __DIR__ . '/Interfaces/MapInterface.php';
 require_once  __DIR__ . '/Interfaces/SetInterface.php';
 require_once  __DIR__ . '/Interfaces/VectorInterface.php';
+require_once  __DIR__ . '/Iterators/MultiMapIterator.php';
 require_once  __DIR__ . '/Maps/Map.php';
 require_once  __DIR__ . '/Maps/MultiMap.php';
 require_once  __DIR__ . '/Sequence/Deque.php';

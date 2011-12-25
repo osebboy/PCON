@@ -91,7 +91,7 @@ class Map implements MapInterface
 	 * preserved. 
 	 * 
 	 * @param Closure $predicate
-	 * @return array | filtered elements
+	 * @return PCON\Maps\Map | with filtered elements
 	 */
 	public function filter(Closure $predicate)
 	{
@@ -112,18 +112,31 @@ class Map implements MapInterface
 	public function getIterator()
 	{
 		$it = new ArrayIterator($this->container);
-		
-		// need to check again if position still exists
-		// because seek() can be called and the key can be erased before the iterator
+
 		if ( $this->pos )
 		{
 			if ( !isset($this->container[$this->pos]) )
 			{
 				throw new \LogicException('Invalid position');
 			}
-			$it->seek($this->pos);
-			
-			$this->pos = null; // reset the position
+			if ( is_int($this->pos) )
+			{
+				$it->seek($this->pos);
+				
+				$this->pos = null;
+
+				return $it;
+			}
+			while ( $it->valid() )
+			{
+				if ( $it->key() === $this->pos )
+				{
+					$this->pos = null;
+
+					return $it;
+				}
+				$it->next();
+			}
 		}
 		return $it;
 	}
@@ -230,8 +243,48 @@ class Map implements MapInterface
 	}
 	
 	/**
-	 * Set the iterator starting position. The position is reset to
-	 * null after iteration.
+	 * Set the iterator starting position. Works with 'string' keys as well.
+	 *
+	 * PHP's SeekableIterator only works with integer values, unfortunately.
+	 * Here, this method allows setting the iterator position to string keys as
+	 * well. The important point to keep in mind is that if the iterator
+	 * pointer is set with this method, then the iterator should be 
+	 * called explicitly and 'while' loop should be used instead of 'foreach'
+	 * because 'foreach' will rewind the iterator position to the beginning of
+	 * the container before the iteration. See the example below.
+	 *
+	 * <code>
+	 * $map = mew Map();
+	 * $map['a'] = 1;
+	 * $map['b'] = 2;
+	 * $map['c'] = 3;
+	 * $map['d'] = 4;
+	 * $map['e'] = 5;
+	 * 
+	 * $map->seek('c'); // now the iterator points to the key 'c'
+	 * 
+	 * // if we do a foreach, it will start from the beginning
+	 * foreach ( $map as $value )
+	 * {
+	 * 	echo $value;
+	 * } 
+	 * // returns 1 2 3 4 5
+	 *
+	 * // now see how it's with 'while'
+	 * // iterator position is reset after every iteration in Maps
+	 * // since we iterated previously, we need to set the iterator position again
+	 * $map->seek('c');
+	 * $it = $map->getIterator(); // we call the iterator explicitly
+	 *
+	 * // it will start  iteration from the key 'c' as we would expect using 'seek'
+	 * while ( $it->valid() )
+	 * {
+	 * 	echo $it->current();
+	 *
+	 * 	$it->next();
+	 * }
+	 * // returns 3, 4, 5 
+	 * </code>
 	 * 
 	 * @see Map::getIterator()
 	 * @param Mixed |int or string
@@ -249,7 +302,8 @@ class Map implements MapInterface
 	}
 
 	/**
-	 * Sorts the map with a Comparison function. Key => Value relation is preserved.
+	 * Sorts the map in ascending order if a comparison function is not provided. With a
+	 * comparison function, it sorts the map's values based on the function. 
 	 *
 	 * <code>
 	 * $comp = function ($a, $b) 
@@ -261,18 +315,19 @@ class Map implements MapInterface
     	 * 	return ($a < $b) ? -1 : 1;
 	 * };
 	 * $map = new Map();
-	 * $map->assign( array('tar' => 'zip', 'foo' => 'bar') );
+	 * $map->insert('tar', 'zip')->insert('foo', 'bar');
+	 *
 	 * var_dump($map->sort($comp)) ; // true(boolean)
 	 *
 	 * $map->toArray() === array('foo' => 'bar', 'tar' => 'zip'); // true
 	 * </code>
-	 *
-	 * @param $comp | Closure, function
-	 * @return boolean | true if sorted, false otherwise
+	 * 
+         * @param $comp | optional - Closure, function
+	 * @return boolean | true if sorted, false otherwise 
 	 */
-	public function sort(Closure $comp)
+	public function sort(Closure $comp = null)
 	{
-		return uasort($comp, $this->container);
+		return $comp ? uasort($this->container, $comp) : ksort($this->container);
 	}
 
 	/**

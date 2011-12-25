@@ -34,5 +34,5 @@ interface MapInterface extends ContainerInterface, ArrayAccess
 	public function count($key);
 	public function indexOf($value);
 	public function seek($position);
-	public function sort(Closure $comp);
+	public function sort(Closure $comp = null);
 }

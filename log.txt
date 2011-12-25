@@ -1,3 +1,9 @@
+12/26
+- Test completed
+- Introduced PCON\Iterators namespace
+- Added PCON\Iterators\MultiMapIterator
+- Modified Comments
+
 12/23
 - PCON\Sets tests completed.
 

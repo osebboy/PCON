@@ -43,15 +43,14 @@ use Closure, ArrayIterator;
  * )
  * 
  * <code>
- * // we can position to 'animals'
+ * // we can position to 'animals' and start iterating from animals.
+ * // Peeforms the same as SeekableITerator with an added benefit accepting
+ * // string keys
  * $multimap->seek('animals');
  * 
- * // iterator will return the animals
- * // cat - cow - dog - fox - ant
- * foreach ( $multimap as $animal )
- * {
- * 		echo $animal . ' - ';
- * }
+ * // or obtain the animals array only
+ * $map->offsetGet('animals');
+ * 
  * </code>
  * 
  * @author  Omercan Sebboy (www.osebboy.com)
@@ -87,7 +86,7 @@ class MultiMap extends Map
 	 * };
 	 * 
 	 * // returns a new MultiMap with key 'animals' and values in Map ('cow', 'dog', 'fox')
-	 * $map->filter($predicate); 
+	 * $multimap->filter($predicate); 
 	 * </code>
 	 * 
 	 * @param Closure $predicate
@@ -118,23 +117,13 @@ class MultiMap extends Map
 	 */
 	public function getIterator()
 	{
-		$it = null;
-		
-		// need to check again if position still exists
-		// the key can be erased before the iterator even if the position exists
+		$it = new \PCON\Iterators\MultiMapIterator($this);
+
 		if ( $this->pos )
 		{
-			if ( !isset($this->container[$this->pos]) )
-			{
-				throw new \LogicException('Invalid position');
-			}
-			$it = new ArrayIterator($this->container[$this->pos]);
-			
-			$this->pos = null; // reset the position
-		}
-		else
-		{
-			$it = new ArrayIterator($this->container);
+			$it->seek($this->pos);
+
+			$this->pos = null;
 		}
 		return $it;
 	}
@@ -177,6 +166,19 @@ class MultiMap extends Map
 		
 		return $this;
 	}
+
+	/**
+	 * Get associated values with a key(offset).
+	 * 
+	 * ArrayAcces interface.
+	 * 
+	 * @param mixed $offset | integer or string
+	 * @return array
+	 */
+	public function offsetGet($offset)
+	{
+		return isset($this->container[$offset]) ? $this->container[$offset] : array();
+	}
 	
 	/**
 	 * Alias of insert(). Unlike Maps, $offset has to be provided for MultiMaps.
@@ -193,11 +195,11 @@ class MultiMap extends Map
 	}
 
 	/**
-	 * Removes a value associated with a key. 
+	 * Removes a value and returns the associated key. 
 	 * 
 	 * @param mixed $key
 	 * @param mixed $value
-	 * @return mixed | false if not found
+	 * @return mixed | false if value does not exist
 	 */
 	public function remove($value)
 	{

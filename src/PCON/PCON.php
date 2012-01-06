@@ -24,6 +24,7 @@
 	'PCON\\Interfaces\\Pcon'		=> __DIR__ . '/Interfaces/Pcon.php',
 	'PCON\\Interfaces\\SetInterface'	=> __DIR__ . '/Interfaces/SetInterface.php',
 	'PCON\\Interfaces\\VectorInterface'	=> __DIR__ . '/Interfaces/VectorInterface.php',
+	'PCON\\Iterators\\MultiMapIterator'	=> __DIR__ . '/Iterators/MultiMapIterator.php',
 	'PCON\\Maps\\Map' 			=> __DIR__ . '/Maps/Map.php',
 	'PCON\\Maps\\MultiMap'	 		=> __DIR__ . '/Maps/MultiMap.php',
 	'PCON\\Sequence\\Deque'			=> __DIR__ . '/Sequence/Deque.php',

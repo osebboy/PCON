@@ -15,7 +15,8 @@
  */
 namespace PCON\Maps;
 
-use Closure, ArrayIterator;
+use PCON\Iterators\MultiMapIterator;
+use Closure;
 
 /**
  * MultiMap is an associative container much like a Map container but allows
@@ -81,8 +82,8 @@ class MultiMap extends Map
 	 * <code> 
 	 * $predicate = function($value) 
 	 * {
-	 * 		// return all values with letter 'o' in it
-	 * 		return stripos($value, 'o') !== false; 			
+	 * 	// return all values with letter 'o' in it
+	 * 	return stripos($value, 'o') !== false; 			
 	 * };
 	 * 
 	 * // returns a new MultiMap with key 'animals' and values in Map ('cow', 'dog', 'fox')
@@ -113,11 +114,11 @@ class MultiMap extends Map
 	/**
 	 * Iterator.
 	 * 
-	 * @return ArrayIterator
+	 * @return MultiMapIterator
 	 */
 	public function getIterator()
 	{
-		$it = new \PCON\Iterators\MultiMapIterator($this);
+		$it = new MultiMapIterator($this);
 
 		if ( $this->pos )
 		{

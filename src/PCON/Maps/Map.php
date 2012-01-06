@@ -52,7 +52,7 @@ class Map implements MapInterface
 	}
 
 	/**
-	 * Searches the container for an element with $key. Maps do not allow
+	 * Searches the container for an element with $key.
          * Since map container doesn't allow the same key again, it always returns
          * 0(zero) or 1(one). In contrast, MultiMap containers can return more than
          * 1 since MultiMaps allow more than 1 value for a key.

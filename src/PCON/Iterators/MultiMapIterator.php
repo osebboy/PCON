@@ -140,7 +140,8 @@ class MultiMapIterator implements Iterator
 	}
 
 	/**
-	 * Movs iterator position to the defined position.
+	 * Moves iterator position to the defined position. String keys
+	 * are accepted.
 	 * 
 	 * @param mixed $pos | integer or string
 	 */
@@ -148,7 +149,7 @@ class MultiMapIterator implements Iterator
 	{
 		if ( !isset($this->map[$pos]) )
 		{
-			throw new Exception('Position does not exist');
+			throw new \InvalidArgumentException('Position does not exist');
 		}
 		$this->rewind();
 		

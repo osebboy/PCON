@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * PCON: PHP Containers.
  * 
  * Copyright (c) 2011 - 2012, Omercan Sebboy <osebboy@gmail.com>.
@@ -15,7 +15,7 @@
  */
 namespace PCON\Definitions;
 
-/*
+/**
  * Adaptor Abstract. Stacks and Queue are implemented as adaptors. They simply
  * accept an array or an instance of StdInterface as an argument. This enables
  * flexibility in between PCON and regular arrays, which enables adaptors to
@@ -26,14 +26,14 @@ namespace PCON\Definitions;
  */
 abstract class AdaptorAbstract
 {
-	/*
+	/**
 	 * Container.
 	 *
 	 * @var array 
 	 */
 	protected $container;
 	
-	/*
+	/**
 	 * Constructor.
 	 *
 	 * @param mixed $container
@@ -61,7 +61,7 @@ abstract class AdaptorAbstract
 		}
 	}
 	
-	/*
+	/**
 	 * Tests if the container is empty
 	 *
 	 * @return boolean 
@@ -71,7 +71,7 @@ abstract class AdaptorAbstract
 		return !$this->container;;
 	}
 	
-	/*
+	/**
 	 * Adaptors implement this method depending on the context.
 	 *
 	 * Stack -> LIFO
@@ -81,7 +81,7 @@ abstract class AdaptorAbstract
 	 */
 	abstract public function pop();
 	
-	/*
+	/**
 	 * Adds elements to the end of adaptor.
 	 *
 	 * @return int | new size of the container
@@ -90,11 +90,11 @@ abstract class AdaptorAbstract
 	{
 		return array_push($this->container, $value);
 	}
-	
-	/*
+
+	/**
 	 * Number of elements in the container.
 	 *
-	 * @return int 
+	 * @return integer
 	 */
 	public function size()
 	{

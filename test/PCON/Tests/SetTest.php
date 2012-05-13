@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * PCON: PHP Containers.
  * 
  * Copyright (c) 2011 - 2012, Omercan Sebboy <osebboy@gmail.com>.
@@ -11,24 +11,24 @@
  * @author     Omercan Sebboy (www.osebboy.com)
  * @copyright  Copyright(c) 2011 - 2012, Omercan Sebboy (osebboy@gmail.com)
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
- * @version    1.1
+ * @version    2.0.alpha
  */
-namespace PCON\Tests\Sets;
+namespace PCON\Tests;
 
-use PCON\Sets\ObjectSet;
+use PCON\Set;
 use stdClass;
 
 /**
- * ObjsetSet Test.
+ * Set Test.
  * 
  * @author  Omercan Sebboy (www.osebboy.com)
- * @version 1.1
+ * @version 2.0.alpha
  */
-class ObjectSetTest extends \PHPUnit_Framework_TestCase 
+class SetTest extends \PHPUnit_Framework_TestCase 
 {
 	protected function setUp() 
 	{
-		$this->set = new ObjectSet();
+		$this->set = new Set();
 
 		// objects to use
 		$this->a   = new stdClass();
@@ -49,7 +49,7 @@ class ObjectSetTest extends \PHPUnit_Framework_TestCase
 	
 	public function testAssignContainerInterfaceIntance()
 	{
-		$set = new ObjectSet();
+		$set = new Set();
 		$set->assign(array($this->a, $this->b, $this->c));
 		$this->assertEquals(3, $set->size());
 
@@ -75,16 +75,16 @@ class ObjectSetTest extends \PHPUnit_Framework_TestCase
 	{
 		// sets always return 1 or 0 because sets hold unique elements
 		$this->set->assign($this->a, $this->b);
-		$this->assertEquals(1, $this->set->count($this->a));
-		$this->assertEquals(0, $this->set->count($this->c));
+		$this->assertEquals(true, $this->set->contains($this->a));
+		$this->assertEquals(false, $this->set->contains($this->c));
 	}
 
 	public function testEraseShouldEraseElement()
 	{
 		$this->set->assign($this->a);
-		$this->assertEquals(1, $this->set->count($this->a));
+		$this->assertEquals(true, $this->set->contains($this->a));
 		$this->set->erase($this->a);
-		$this->assertEquals(0, $this->set->count($this->a));
+		$this->assertEquals(false, $this->set->contains($this->a));
 	}
 
 	public function testFilter()
@@ -96,13 +96,13 @@ class ObjectSetTest extends \PHPUnit_Framework_TestCase
 		};
 		$filtered = $this->set->filter($predicate);
 		// should return own type of Set
-		$this->assertTrue($filtered instanceof \PCON\Sets\ObjectSet);
+		$this->assertTrue($filtered instanceof \PCON\Set);
 
 		// $filtered should include $this->a, $this->b but not $this->c
 		$this->assertEquals(2, $filtered->size());
-		$this->assertTrue($filtered->count($this->a) === 1);
-		$this->assertTrue($filtered->count($this->c) === 0);
-		$this->assertTrue($filtered->count($this->b) === 1);
+		$this->assertTrue($filtered->contains($this->a));
+		$this->assertFalse($filtered->contains($this->c));
+		$this->assertTrue($filtered->contains($this->b));
 	}
 	
 	public function testInsert()
@@ -110,13 +110,7 @@ class ObjectSetTest extends \PHPUnit_Framework_TestCase
 		$this->set->insert($this->a)->insert($this->b);
 		$this->assertEquals(2, $this->set->size());
 	}
-	
-	public function testInsertShouldThrowNoticeIfNotObject()
-	{
-		$this->setExpectedException('PHPUnit_framework_error');
-		$this->set->insert('string');
-	}
-	
+
 	public function testInsertShouldNotAddTheSameObjectSecondTime()
 	{
 		$this->set->insert($this->a);

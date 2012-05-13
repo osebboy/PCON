@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * PCON: PHP Containers.
  * 
  * Copyright (c) 2011 - 2012, Omercan Sebboy <osebboy@gmail.com>.
@@ -11,19 +11,34 @@
  * @author     Omercan Sebboy (www.osebboy.com)
  * @copyright  Copyright(c) 2011 - 2012, Omercan Sebboy (osebboy@gmail.com)
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
- * @version    1.1
+ * @version    2.0.alpha
  */
-namespace PCON\Interfaces;
+namespace PCON;
 
-use IteratorAggregate;
+use PCON\Definitions\AdaptorAbstract;
+use PCON\Traits\ElementAccess;
 
-/**
- * Pcon Interface is the base for all the PCON Containers.
+/*
+ * Queue ( FIFO ).
  * 
  * @author  Omercan Sebboy (www.osebboy.com)
- * @version 1.1
+ * @version 2.0.alpha
  */
-interface Pcon extends IteratorAggregate
-{
+class Queue extends AdaptorAbstract
+{	
+	/*
+	 * Trait.
+	 */
+	use ElementAccess;
 
+	/*
+	 * Returns the first element and removes it from queue
+	 * effectively reducing the queue size by 1.
+	 *
+	 * @return mixed
+	 */
+	public function pop()
+	{
+		return array_shift($this->container);
+	}
 }

@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * PCON: PHP Containers.
  * 
  * Copyright (c) 2011 - 2012, Omercan Sebboy <osebboy@gmail.com>.
@@ -11,26 +11,26 @@
  * @author     Omercan Sebboy (www.osebboy.com)
  * @copyright  Copyright(c) 2011 - 2012, Omercan Sebboy (osebboy@gmail.com)
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
- * @version    1.1
+ * @version    2.0.alpha
  */
-namespace PCON\Tests\Sequence;
+namespace PCON\Tests;
 
-use PCON\Sequence\Queue;
+use PCON\Queue;
 
 /**
  * Queue Test
  * 
  * @author  Omercan Sebboy (www.osebboy.com)
- * @version 1.1
+ * @version 2.0.alpha
  */
 class QueueTest extends \PHPUnit_Framework_TestCase 
 {
 	protected function setUp() 
 	{
 		$this->queue = new Queue();
-		$this->queue->enqueue('ant');
-		$this->queue->enqueue('cat');
-		$this->queue->enqueue('fox');
+		$this->queue->push('ant');
+		$this->queue->push('cat');
+		$this->queue->push('fox');
 	}
 
 	protected function tearDown() 
@@ -43,21 +43,21 @@ class QueueTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals('fox', $this->queue->back());
 	}
 	
-	public function testEnqueue()
+	public function testPush()
 	{
 		$queue = new Queue();
-		$queue->enqueue('foo');
-		$queue->enqueue('bar');
+		$queue->push('foo');
+		$queue->push('bar');
 		$this->assertEquals(2, $queue->size());
 	}
 	
-	public function testDequeue()
+	public function testPop()
 	{
 		// dequeue() from the beginning at all times
-		$this->queue->dequeue();
+		$this->queue->pop();
 		$this->assertEquals(2, $this->queue->size());
-		$this->queue->dequeue();
-		$this->queue->dequeue();
+		$this->queue->pop();
+		$this->queue->pop();
 		$this->assertTrue($this->queue->isEmpty());
 	}
 	
@@ -66,9 +66,9 @@ class QueueTest extends \PHPUnit_Framework_TestCase
 		// Queue is FIFO
 		// dequeue() should remove the front(beginning) continously
 		// and should return the removed value
-		$this->assertEquals('ant', $this->queue->dequeue());
-		$this->assertEquals('cat', $this->queue->dequeue());
-		$this->assertEquals('fox', $this->queue->dequeue());
+		$this->assertEquals('ant', $this->queue->pop());
+		$this->assertEquals('cat', $this->queue->pop());
+		$this->assertEquals('fox', $this->queue->pop());
 	}
 
 	public function testFront()
@@ -80,9 +80,9 @@ class QueueTest extends \PHPUnit_Framework_TestCase
 	public function testIsEmpty()
 	{
 		$this->assertFalse($this->queue->isEmpty());
-		$this->queue->dequeue();
-		$this->queue->dequeue();
-		$this->queue->dequeue();
+		$this->queue->pop();
+		$this->queue->pop();
+		$this->queue->pop();
 		$this->assertTrue($this->queue->isEmpty());
 	}
 }

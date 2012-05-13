@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * PCON: PHP Containers.
  * 
  * Copyright (c) 2011 - 2012, Omercan Sebboy <osebboy@gmail.com>.
@@ -11,17 +11,17 @@
  * @author     Omercan Sebboy (www.osebboy.com)
  * @copyright  Copyright(c) 2011 - 2012, Omercan Sebboy (osebboy@gmail.com)
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
- * @version    1.1
+ * @version    2.0.alpha
  */
-namespace PCON\Tests\Sequence;
+namespace PCON\Tests;
 
-use PCON\Sequence\Liste;
+use PCON\Liste;
 
 /**
  * Liste Test
  * 
  * @author  Omercan Sebboy (www.osebboy.com)
- * @version 1.1
+ * @version 2.0.alpha
  */
 class ListeTest extends \PHPUnit_Framework_TestCase 
 {
@@ -49,12 +49,13 @@ class ListeTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals(2, $this->list->size()); 
 	}
 	
-	public function testAssignContainerInterfaceIntance()
+	public function testAssignStdInterfaceIntance()
 	{
 		$set = new Liste();
 		$set->assign(array('foo', 'bar'));
 
 		$this->list->assign($set);
+
 		$this->assertEquals(2, $this->list->size());
 	}
 

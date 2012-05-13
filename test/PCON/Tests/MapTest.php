@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * PCON: PHP Containers.
  * 
  * Copyright (c) 2011 - 2012, Omercan Sebboy <osebboy@gmail.com>.
@@ -9,21 +9,21 @@
  * that was distributed with this source code.
  *
  * @author     Omercan Sebboy (www.osebboy.com)
- * @package    PCON\Tests\Maps
  * @copyright  Copyright(c) 2011 - 2012, Omercan Sebboy (osebboy@gmail.com)
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
- * @version    1.1
+ * @version    2.0.alpha
  */
-namespace PCON\Tests\Maps;
+namespace PCON\Tests;
 
-use PCON\Maps\Map;
+use PCON\Map;
 
-require_once __DIR__ . '/../../TestHelper.php';
+require_once __DIR__ . '/../TestHelper.php';
+
 /**
  * Map Test
  * 
  * @author  Omercan Sebboy (www.osebboy.com)
- * @version 1.1
+ * @version 12.0.alpha
  */
 class MapTest extends \PHPUnit_Framework_TestCase 
 {
@@ -84,7 +84,7 @@ class MapTest extends \PHPUnit_Framework_TestCase
 
 		$filtered = $this->map->filter($predicate);
 
-		$this->assertTrue($filtered instanceof \PCON\Maps\Map);
+		$this->assertTrue($filtered instanceof \PCON\Map);
 		$this->assertEquals(2, $filtered->size());
 		
 		$includes = array('one' => $a, 'three' => $b);
@@ -136,7 +136,8 @@ class MapTest extends \PHPUnit_Framework_TestCase
 
 	public function testOffsetUnset()
 	{
-		$this->assertEquals('value', $this->map->offsetUnset('key') );
+		$this->map->offsetUnset('key');
+		$this->assertEquals(0, $this->map->size() );
 	}
 
 	public function testRemove()

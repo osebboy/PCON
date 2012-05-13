@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * PCON: PHP Containers.
  * 
  * Copyright (c) 2011 - 2012, Omercan Sebboy <osebboy@gmail.com>.
@@ -11,35 +11,35 @@
  * @author     Omercan Sebboy (www.osebboy.com)
  * @copyright  Copyright(c) 2011 - 2012, Omercan Sebboy (osebboy@gmail.com)
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
- * @version    1.1
+ * @version    2.0.alpha
  */
-namespace PCON\Sets;
+namespace PCON\Traits;
 
-/**
- * Array Set is an associative container that stores unique arrays.
+/*
+ * Trait for the first and last element access in a container.
  * 
  * @author  Omercan Sebboy (www.osebboy.com)
- * @version 1.1
+ * @version 2.0.alpha
  */
-class ArraySet extends SetAbstract
+trait ElementAccess
 {
-	/**
-	 * Array hash.
+	/*
+	 * Get last element.
 	 *
-	 * @return string
+	 * @return mixed
 	 */
-	protected function hash($value)
+	public function back()
 	{
-		return md5(serialize($value));
+		return end($this->container);
 	}
 
-	/**
-	 * Is the value array?
+	/*
+	 * Get first element.
 	 *
-	 * @return boolean
-	 */
-	protected function isValid($value)
+	 * @return mixed
+	 */	
+	public function front()
 	{
-		return is_array($value);
+		return reset($this->container);
 	}
 }

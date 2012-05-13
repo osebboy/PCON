@@ -11,14 +11,14 @@
  * @author     Omercan Sebboy (www.osebboy.com)
  * @copyright  Copyright(c) 2011 - 2012, Omercan Sebboy (osebboy@gmail.com)
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
- * @version    1.1
+ * @version    2.0.alpha
  */
 namespace PCON\Iterators;
 
-use PCON\Maps\MultiMap;
+use PCON\MultiMap;
 use Iterator;
 
-/**
+/*
  * MultiMap Iterator.
  *
  * MultiMaps allow more than one element have the same key. MultiMapIterator
@@ -51,35 +51,35 @@ use Iterator;
  * signal2 => slot2
  *
  * @author  Omercan Sebboy (www.osebboy.com)
- * @version 1.1
+ * @version 2.0.alpha
  */
 class MultiMapIterator implements Iterator
 {
-	/**
+	/*
 	 * MultiMap container.
 	 * 
 	 * @var $map array
 	 */
 	private $map;
 
-	/**
+	/*
 	 * Current main key position.
 	 * 
 	 * @var $pos mixed | integer or string
 	 */
 	private $pos   = 0;
 	
-	/**
+	/*
 	 * Sub key position.
 	 * 
 	 * @var $sub | integer
 	 */
 	private $sub   = 0;
 	
-	/**
+	/*
 	 * Iterator construct.
 	 * 
-	 * @param \PCON\Maps\MultiMap $multiMap
+	 * @param MultiMap $multiMap
 	 */
 	public function __construct(MultiMap $multiMap)
 	{
@@ -88,7 +88,7 @@ class MultiMapIterator implements Iterator
 		$this->rewind(); // this sets the position
 	}
 
-	/**
+	/*
 	 * Current element.
 	 * 
 	 * @return mixed
@@ -98,7 +98,7 @@ class MultiMapIterator implements Iterator
 		return $this->map[$this->pos][$this->sub];
 	}
 
-	/**
+	/*
 	 * Current iterator key.
 	 * 
 	 * @return mixed | integer or string
@@ -108,7 +108,7 @@ class MultiMapIterator implements Iterator
 		return $this->pos;
 	}
 
-	/**
+	/*
 	 * Moves the iterator pointer to next element.
 	 * 
 	 * @return void
@@ -125,7 +125,7 @@ class MultiMapIterator implements Iterator
 		}
 	}
 
-	/**
+	/*
 	 * Rewinds iterator pointer to the beginning.
 	 * 
 	 * @return void
@@ -139,7 +139,7 @@ class MultiMapIterator implements Iterator
 		$this->sub = 0;
 	}
 
-	/**
+	/*
 	 * Moves iterator position to the defined position. String keys
 	 * are accepted.
 	 * 
@@ -163,7 +163,7 @@ class MultiMapIterator implements Iterator
 		}
 	}
 
-	/**
+	/*
 	 * Checks if the current element position is valid.
 	 * 
 	 * @return boolean

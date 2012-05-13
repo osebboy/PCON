@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * PCON: PHP Containers.
  * 
  * Copyright (c) 2011 - 2012, Omercan Sebboy <osebboy@gmail.com>.
@@ -11,14 +11,14 @@
  * @author     Omercan Sebboy (www.osebboy.com)
  * @copyright  Copyright(c) 2011 - 2012, Omercan Sebboy (osebboy@gmail.com)
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
- * @version    1.1
+ * @version    2.0.alpha
  */
-namespace PCON\Maps;
+namespace PCON;
 
 use PCON\Iterators\MultiMapIterator;
 use Closure;
 
-/**
+/*
  * MultiMap is an associative container much like a Map container but allows
  * different elements to have the same key, see example below.
  * 
@@ -43,28 +43,24 @@ use Closure;
  *     			  4 => "ant" )
  * )
  * 
- * <code>
  * // we can position to 'animals' and start iterating from animals.
- * // Peeforms the same as SeekableITerator with an added benefit accepting
- * // string keys
  * $multimap->seek('animals');
  * 
- * // or obtain the animals array only
+ * // or obtain the animals only
  * $map->offsetGet('animals');
- * 
  * </code>
  * 
  * @author  Omercan Sebboy (www.osebboy.com)
- * @version 1.1
+ * @version 2.0.alpha
  */
 class MultiMap extends Map
 {	
-	/**
+	/*
 	 * Returns the element count for a key.
 	 * 
 	 * <code>
 	 * $map->count('animals'); // 5
-         * </code>
+     * </code>
 	 *
 	 * @param mixed $key | integer or string
 	 * @return integer  
@@ -74,7 +70,7 @@ class MultiMap extends Map
 		return count($this->offsetGet($key));
 	}
 	
-	/**
+	/*
 	 * Iterates over each value associated with $key passing 
 	 * them $predicate, if the $predicate returns true, the current
 	 * value in the container is added to the result.
@@ -82,8 +78,8 @@ class MultiMap extends Map
 	 * <code> 
 	 * $predicate = function($value) 
 	 * {
-	 * 	// return all values with letter 'o' in it
-	 * 	return stripos($value, 'o') !== false; 			
+	 * 	    // return all values with letter 'o' in it
+	 * 	    return stripos($value, 'o') !== false; 			
 	 * };
 	 * 
 	 * // returns a new MultiMap with key 'animals' and values in Map ('cow', 'dog', 'fox')
@@ -111,7 +107,7 @@ class MultiMap extends Map
 		return $filtered;
 	}
 	
-	/**
+	/*
 	 * Iterator.
 	 * 
 	 * @return MultiMapIterator
@@ -129,9 +125,9 @@ class MultiMap extends Map
 		return $it;
 	}
 
-	/**
+	/*
 	 * Searches the multimap with a value and returns the key if found. There might
-         * more than one of the same value. This returns the first key found.
+     * more than one of the same value. This returns the first key found.
 	 *
 	 * <code>
 	 * $map->indexOf('cat'); // returns 'animals'
@@ -153,7 +149,7 @@ class MultiMap extends Map
 	}
 
 	
-	/**
+	/*
 	 * Inserts key and value, multimap accepts more than 1 value
 	 * for the same key, see the class definition above.
 	 * 
@@ -161,14 +157,14 @@ class MultiMap extends Map
 	 * @param mixed $value
 	 * @return MultiMap | $this
 	 */
-	public function insert($key, $value)
+	public function insert($index, $value)
 	{
-		$this->container[$key][] = $value;
+		$this->container[$index][] = $value;
 		
 		return $this;
 	}
 
-	/**
+	/*
 	 * Get associated values with a key(offset).
 	 * 
 	 * ArrayAcces interface.
@@ -181,7 +177,7 @@ class MultiMap extends Map
 		return isset($this->container[$offset]) ? $this->container[$offset] : array();
 	}
 	
-	/**
+	/*
 	 * Alias of insert(). Unlike Maps, $offset has to be provided for MultiMaps.
 	 * 
 	 * ArrayAccess interface.
@@ -195,7 +191,7 @@ class MultiMap extends Map
 		$this->insert($offset, $value);
 	}
 
-	/**
+	/*
 	 * Removes a value and returns the associated key. 
 	 * 
 	 * @param mixed $key
@@ -216,3 +212,4 @@ class MultiMap extends Map
 		return false;
 	}
 }
+

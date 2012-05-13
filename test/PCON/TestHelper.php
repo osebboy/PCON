@@ -22,4 +22,18 @@
 
 require_once 'PHPUnit/Framework/TestCase.php';
 
-require_once __DIR__ . '/../../src/PCON/PCON.php';
+// require_once __DIR__ . '/../../src/PCON/PCON.php';
+require_once  __DIR__ . '/../../src/PCON/Definitions/StdInterface.php';
+require_once  __DIR__ . '/../../src/PCON/Definitions/AdaptorAbstract.php';
+require_once  __DIR__ . '/../../src/PCON/Iterators/MultiMapIterator.php';
+require_once  __DIR__ . '/../../src/PCON/Traits/Base.php';
+require_once  __DIR__ . '/../../src/PCON/Traits/ElementAccess.php';
+require_once  __DIR__ . '/../../src/PCON/Traits/KeyAccess.php';
+require_once  __DIR__ . '/../../src/PCON/Traits/Modifiers.php';
+require_once  __DIR__ . '/../../src/PCON/Map.php';
+require_once  __DIR__ . '/../../src/PCON/MultiMap.php';
+require_once  __DIR__ . '/../../src/PCON/Deque.php';
+require_once  __DIR__ . '/../../src/PCON/Liste.php';
+require_once  __DIR__ . '/../../src/PCON/Queue.php';
+require_once  __DIR__ . '/../../src/PCON/Stack.php';
+require_once  __DIR__ . '/../../src/PCON/Set.php';

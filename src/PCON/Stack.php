@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * PCON: PHP Containers.
  * 
  * Copyright (c) 2011 - 2012, Omercan Sebboy <osebboy@gmail.com>.
@@ -11,27 +11,37 @@
  * @author     Omercan Sebboy (www.osebboy.com)
  * @copyright  Copyright(c) 2011 - 2012, Omercan Sebboy (osebboy@gmail.com)
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
- * @version    1.1
+ * @version    2.0.alpha
  */
-namespace PCON\Interfaces;
+namespace PCON;
 
-use Closure;
-use PCON\Interfaces\ContainerInterface;
+use PCON\Definitions\AdaptorAbstract;
 
-/**
- * Set Interface.
+/*
+ * Stack ( LIFO ).
  * 
  * @author  Omercan Sebboy (www.osebboy.com)
- * @version 1.1
+ * @version 2.0.alpha
  */
-interface SetInterface extends ContainerInterface
-{
-	// modifiers
-	public function assign($args);
-	public function erase($value);
-	public function insert($value);
+class Stack extends AdaptorAbstract
+{	
+	/*
+	 * Get the last element and remove from the stack.
+	 *
+	 * @return mixed 
+	 */
+	public function pop()
+	{
+		return array_pop($this->container);	
+	}
 	
-	// operations
-	public function count($value);
-	public function sort(Closure $comp);
+	/*
+	 * Return the last element in the stack.
+	 *
+	 * @return mixed
+	 */
+	public function top()
+	{
+		return end($this->container);
+	}
 }

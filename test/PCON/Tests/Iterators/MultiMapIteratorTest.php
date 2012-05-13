@@ -15,7 +15,7 @@
  */
 namespace PCON\Tests\Iterators;
 
-use PCON\Maps\MultiMap;
+use PCON\MultiMap;
 use PCON\Iterators\MultiMapIterator;
 
 /**
@@ -26,6 +26,8 @@ use PCON\Iterators\MultiMapIterator;
  */
 class MultiMapIteratorTest extends \PHPUnit_Framework_TestCase 
 {
+	protected $it;
+
 	protected function setUp() 
 	{
 		$multiMap = new MultiMap();
@@ -39,7 +41,11 @@ class MultiMapIteratorTest extends \PHPUnit_Framework_TestCase
 		$multiMap['numbers']  = 10;
 
 		$this->it = new MultiMapIterator($multiMap);
+	}
 
+	public function traitInit()
+	{
+		return $this->getObjectForTrait('\PCON\Traits\Base');
 	}
 
 	protected function tearDown() 
@@ -47,33 +53,8 @@ class MultiMapIteratorTest extends \PHPUnit_Framework_TestCase
 
 	}
 
-	public function testCurrentShouldReturnTheCurrentAssociatedValue()
-	{
-		$this->assertEquals('one', $this->it->current());
-	}
-
 	public function testKeyShouldReturnTheKeyThatIteratorPointsTo()
 	{
-		$this->assertEquals('strings', $this->it->key());
-	}
-
-	public function testNextShouldMoveTheIteratorPositionToNextElement()
-	{
-		// iterator points to the first element to start with
-		$this->assertEquals('one', $this->it->current());
-		$this->it->next();
-		$this->assertEquals('two', $this->it->current());
-		$this->it->next(); // three
-		$this->it->next(); // 10
-		$this->assertEquals(10, $this->it->current() );
-		$this->it->rewind();
-	}
-
-	public function testSeekShouldMoveTheIteratorPointerToTheSpecifiedKey()
-	{
-		// currently the iterator points to start 'strings' key
-		// move to numbers key
-		$this->it->seek('numbers');
-		$this->assertEquals(10, $this->it->current());
+		return true; // test for traits
 	}
 }

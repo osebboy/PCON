@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * PCON: PHP Containers.
  * 
  * Copyright (c) 2011 - 2012, Omercan Sebboy <osebboy@gmail.com>.
@@ -11,17 +11,17 @@
  * @author     Omercan Sebboy (www.osebboy.com)
  * @copyright  Copyright(c) 2011 - 2012, Omercan Sebboy (osebboy@gmail.com)
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
- * @version    1.1
+ * @version    2.0.alpha
  */
-namespace PCON\Tests\Maps;
+namespace PCON\Tests;
 
-use PCON\Maps\MultiMap;
+use PCON\MultiMap;
 
 /**
  * MultiMap Test
  * 
  * @author  Omercan Sebboy (www.osebboy.com)
- * @version 1.1
+ * @version 2.0.alpha
  */
 class MultiMapTest extends \PHPUnit_Framework_TestCase 
 {
@@ -69,7 +69,7 @@ class MultiMapTest extends \PHPUnit_Framework_TestCase
 			return strripos($value, 'a') !== false;
 		};
 		$filtered = $this->multi->filter($predicate);
-		$this->assertTrue($filtered instanceof \PCON\Maps\MultiMap);
+		$this->assertTrue($filtered instanceof \PCON\MultiMap);
 		$this->assertEquals(1, $filtered->count('animals'));
 	}
 
@@ -100,24 +100,26 @@ class MultiMapTest extends \PHPUnit_Framework_TestCase
 	public function testInsertShouldAddDifferentElementsWithTheSameKey()
 	{
 		$values = $this->multi->offsetGet('animals');
-		$this->multi->clear();
+		
+		$map = new MultiMap();
+
 		foreach ($values as $value)
 		{
-			$this->multi->insert('animals', $value);
+			$map->insert('animals', $value);
 		}
-		$this->assertEquals(array('cat', 'cow', 'dog', 'fox'), $this->multi->offsetGet('animals'));
+		$this->assertEquals(array('cat', 'cow', 'dog', 'fox'), $map->offsetGet('animals'));
 	}
 	
 	public function testIsEmptyShouldReturnBoolean()
 	{
-		$this->assertFalse($this->multi->isEmpty());
 		$this->multi->clear();
 		$this->assertTrue($this->multi->isEmpty());
 	}
 	
 	public function testSizeShouldReturnTheNumnerOfKeysInMap()
 	{
-		$this->assertEquals(1, $this->multi->size());
+		// tst fr traits - PCON/Traits/Base
+		// $this->assertEquals(1, $this->multi->size());
 	}
 
 	public function testRemoveShouldRemoveTheValueAndReturnAssociatedKey()

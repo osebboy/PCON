@@ -17,7 +17,7 @@ namespace PCON\Definitions;
 
 use IteratorAggregate;
 
-/*
+/**
  * Standard Interface that is implemented by all containers except for the
  * adaptors.  
  * 
@@ -33,7 +33,7 @@ use IteratorAggregate;
  */
 interface StdInterface extends IteratorAggregate
 {
-	/*
+	/**
 	 * Container to Array.
 	 * 
 	 * PHP array functions do not accept Iterator or IteratorAggregate 

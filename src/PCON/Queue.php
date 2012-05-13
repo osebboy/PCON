@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * PCON: PHP Containers.
  * 
  * Copyright (c) 2011 - 2012, Omercan Sebboy <osebboy@gmail.com>.
@@ -18,7 +18,7 @@ namespace PCON;
 use PCON\Definitions\AdaptorAbstract;
 use PCON\Traits\ElementAccess;
 
-/*
+/**
  * Queue ( FIFO ).
  * 
  * @author  Omercan Sebboy (www.osebboy.com)
@@ -26,12 +26,12 @@ use PCON\Traits\ElementAccess;
  */
 class Queue extends AdaptorAbstract
 {	
-	/*
+	/**
 	 * Trait.
 	 */
 	use ElementAccess;
 
-	/*
+	/**
 	 * Returns the first element and removes it from queue
 	 * effectively reducing the queue size by 1.
 	 *

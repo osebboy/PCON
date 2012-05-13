@@ -15,7 +15,7 @@
  */
 namespace PCON\Traits;
 
-/*
+/**
  * Array Key Access trait provides the most common ArrayAccess interface
  * implementation. 
  * 
@@ -39,7 +39,7 @@ namespace PCON\Traits;
  */
 trait KeyAccess
 {
-	/*
+	/**
 	 * Get element at offset.
 	 *
 	 * @param mixed $offset
@@ -50,7 +50,7 @@ trait KeyAccess
 		return isset($this->container[$offset]) ? $this->container[$offset] : null;
 	}
 	
-	/*
+	/**
 	 * Tests whether the offset exists.
 	 *
 	 * @param mixed $offset
@@ -61,7 +61,7 @@ trait KeyAccess
 		return isset($this->container[$offset]);
 	}
 	
-	/*
+	/**
 	 * Alias of at().
 	 *
 	 * @param mixed
@@ -72,7 +72,7 @@ trait KeyAccess
 		return $this->at($offset);
 	}
 	
-	/*
+	/**
 	 * Set element at offset.
 	 *
 	 * @param mixed $offset
@@ -84,7 +84,7 @@ trait KeyAccess
 		$offset ? $this->container[$offset] = $value : $this->container[] = $value;
 	}
 
-	/*
+	/**
 	 * Unset element at offset.
 	 *
 	 * @param mixed $offset

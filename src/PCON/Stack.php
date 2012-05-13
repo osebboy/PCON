@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * PCON: PHP Containers.
  * 
  * Copyright (c) 2011 - 2012, Omercan Sebboy <osebboy@gmail.com>.
@@ -17,7 +17,7 @@ namespace PCON;
 
 use PCON\Definitions\AdaptorAbstract;
 
-/*
+/**
  * Stack ( LIFO ).
  * 
  * @author  Omercan Sebboy (www.osebboy.com)
@@ -25,8 +25,8 @@ use PCON\Definitions\AdaptorAbstract;
  */
 class Stack extends AdaptorAbstract
 {	
-	/*
-	 * Get the last element and remove from the stack.
+	/**
+	 * Get the last element and remove it from the stack.
 	 *
 	 * @return mixed 
 	 */
@@ -35,7 +35,7 @@ class Stack extends AdaptorAbstract
 		return array_pop($this->container);	
 	}
 	
-	/*
+	/**
 	 * Return the last element in the stack.
 	 *
 	 * @return mixed

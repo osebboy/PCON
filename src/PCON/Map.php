@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * PCON: PHP Containers.
  * 
  * Copyright (c) 2011 - 2012, Omercan Sebboy <osebboy@gmail.com>.
@@ -21,7 +21,7 @@ use PCON\Traits\KeyAccess;
 use PCON\Traits\Modifiers;
 use Closure, ArrayAccess, ArrayIterator;
 
-/*
+/**
  * Map is a lightweight associative container that stores elements formed 
  * by the combination of a key value and a mapped value.
  * 
@@ -34,19 +34,19 @@ use Closure, ArrayAccess, ArrayIterator;
  */
 class Map implements StdInterface, ArrayAccess
 {
-	/*
+	/**
 	 * Traits.
 	 */
 	use Base, KeyAccess, Modifiers;
 
-	/*
+	/**
 	 * Iterator position.
 	 * 
 	 * @var mixed | int or string
 	 */
 	protected $pos = null;
 
-	/*
+	/**
 	 * Searches the container for an element with $key.
 	 * Since map container doesn't allow the same key again, it always returns
      * 0(zero) or 1(one). In contrast, MultiMap containers can return more than
@@ -65,7 +65,7 @@ class Map implements StdInterface, ArrayAccess
 		return (int) isset($this->container[$key]);
 	}
 
-	/*
+	/**
 	 * Iterates over each value in the container passing them $predicate 
 	 * If the $predicate function returns true, the current value 
 	 * in the container is returned into the result array, keys are 
@@ -85,7 +85,7 @@ class Map implements StdInterface, ArrayAccess
 		return $map;
 	}
 
-	/*
+	/**
 	 * Iterator.
 	 * 
 	 * @return ArrayIterator
@@ -122,7 +122,7 @@ class Map implements StdInterface, ArrayAccess
 		return $it;
 	}
 
-	/*
+	/**
 	 * Searches the map with a value and returns the key if found. There might be
      * more than one of the same value with a different key (which is very rare). 
 	 * This returns the first key found.
@@ -135,7 +135,7 @@ class Map implements StdInterface, ArrayAccess
 		return array_search($value, $this->container, true);
 	}
 
-	/*
+	/**
 	 * Inserts a key and an associated value to the container.
 	 * 
 	 * @param mixed $key | integer or string
@@ -149,7 +149,7 @@ class Map implements StdInterface, ArrayAccess
 		return $this;
 	}
 
-	/*
+	/**
 	 * Get map keys as values in an array.
 	 *
 	 * @return array
@@ -159,7 +159,7 @@ class Map implements StdInterface, ArrayAccess
 		return array_keys($this->container);
 	}
 
-	/*
+	/**
 	 * Remove a value without looking at its key.
 	 *
      * @param mixed $value
@@ -170,7 +170,7 @@ class Map implements StdInterface, ArrayAccess
 		return (boolean) $this->erase($this->indexOf($value));
 	}
 	
-	/*
+	/**
 	 * Set the iterator starting position. Works with 'string' keys as well.
 	 * If the key is string, then 'while' loop need to be used because 'foreach'
 	 * will rewind the container before iteration.
@@ -211,7 +211,7 @@ class Map implements StdInterface, ArrayAccess
 		return $this;
 	}
 
-	/*
+	/**
 	 * Sorts the map in ascending order if a comparison function is not provided. With a
 	 * comparison function, it sorts the map's values based on the function. 
 	 * 

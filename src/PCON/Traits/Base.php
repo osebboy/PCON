@@ -15,12 +15,12 @@
  */
 namespace PCON\Traits;
 
-/*
+/**
  * Default iterator.
  */
 use SplFixedArray;
 
-/*
+/**
  * Base trait introducing the main methods for PCON containers.
  *
  * This trait enables creating customized containers without repeating the
@@ -62,14 +62,14 @@ use SplFixedArray;
  */
 trait Base
 {
-	/*
+	/**
 	 * Container.
 	 *
 	 * @var array 
 	 */
 	private $container = [];
 	
-	/*
+	/**
 	 * Clear the container.
 	 *
 	 * @return void 
@@ -79,7 +79,7 @@ trait Base
 		$this->container = [];
 	}
 	
-	/*
+	/**
 	 * By IteratorAggregate interface.
 	 *
 	 * @return SplFixedArray | default iterator 
@@ -89,7 +89,7 @@ trait Base
 		return SplFixedArray::fromArray($this->container);
 	}
 	
-	/*
+	/**
 	 * Is the container empty?
 	 *
 	 * @return boolean 
@@ -99,7 +99,7 @@ trait Base
 		return !$this->container;
 	}
 	
-	/*
+	/**
 	 * Get the number of elements in the container.
 	 *
 	 * @return integer
@@ -109,7 +109,7 @@ trait Base
 		return count($this->container);
 	}
 	
-	/*
+	/**
 	 * By PCON\Definitions\StdInterface.
 	 *
 	 * @return array 

@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * PCON: PHP Containers.
  * 
  * Copyright (c) 2011 - 2012, Omercan Sebboy <osebboy@gmail.com>.
@@ -15,7 +15,7 @@
  */
 namespace PCON\Traits;
 
-/*
+/**
  * Trait for the most common container modifiers.
  * 
  * @author  Omercan Sebboy (www.osebboy.com)
@@ -23,7 +23,7 @@ namespace PCON\Traits;
  */
 trait Modifiers
 {
-	/*
+	/**
 	 * Fill the container. This method offers 3 different ways to assign values
 	 * to the container. Returns itself for chanining.
 	 *
@@ -56,7 +56,7 @@ trait Modifiers
 		return $this;
 	}
 	
-	/*
+	/**
 	 * Erase an element with its key.
 	 *
      * @param mixed $key
@@ -75,7 +75,7 @@ trait Modifiers
 		return $ret;
 	}
 	
-	/*
+	/**
 	 * Insert key and value.
 	 *
 	 * @param mixed $key

@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * PCON: PHP Containers.
  * 
  * Copyright (c) 2011 - 2012, Omercan Sebboy <osebboy@gmail.com>.
@@ -19,7 +19,7 @@ use PCON\Definitions\StdInterface;
 use PCON\Traits\Base;
 use SplFixedArray, Closure;
 
-/*
+/**
  * Set is an associative container that stores unique elements. The elements are 
  * the keys themselves. 
  * 
@@ -30,12 +30,12 @@ use SplFixedArray, Closure;
  */
 class Set implements StdInterface
 {
-	/*
+	/**
 	 * Trait.
 	 */
 	use Base;
 	
-	/*
+	/**
 	 * Fill the container. This method offers 3 different ways to assign values
 	 * to a set Returns itself for chanining.
 	 *
@@ -68,7 +68,7 @@ class Set implements StdInterface
 		return $this;
 	}
 	
-	/*
+	/**
 	 * Tests if the set contains $value.
 	 *
      * @param mixed $value
@@ -95,7 +95,7 @@ class Set implements StdInterface
         return $diff1 + $diff2;
 	}
 	
-	/*
+	/**
 	 * Erase a value from the set.
 	 *
      * @param mixed $value
@@ -114,7 +114,7 @@ class Set implements StdInterface
 		return false;
 	}
 	
-	/*
+	/**
 	 * Filter the set with a predicate function. 
 	 *
      * @param Closure $predicate
@@ -125,7 +125,7 @@ class Set implements StdInterface
 		return (new Set)->assign(array_filter($this->container, $predicate));
 	}
 	
-	/*
+	/**
 	 * Array values are returned in SplFixedArray.
 	 *
 	 * @return SplFixedArray
@@ -135,7 +135,7 @@ class Set implements StdInterface
 		return SplFixedArray::fromArray(array_values($this->container));
 	}
 
-	/*
+	/**
 	 * Insert a value. Set stores its hash as its key making it possible
      * for Set specific operations (difference, intersection, subtract,
      * union)
@@ -172,7 +172,7 @@ class Set implements StdInterface
 		return array_intersect_key($set1->toArray(), $set2->toArray());
 	}
 	
-	/*
+	/**
 	 * Sort the set values with a Compare function.
 	 *
      * @param Closure $comp | compare function
@@ -206,6 +206,4 @@ class Set implements StdInterface
 	{
 		return $set1->toArray() + $set2->toArray();
 	}
-	
-
 }

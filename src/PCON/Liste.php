@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * PCON: PHP Containers.
  * 
  * Copyright (c) 2011 - 2012, Omercan Sebboy <osebboy@gmail.com>.
@@ -21,7 +21,7 @@ use PCON\Traits\Modifiers;
 use PCON\Traits\ElementAccess;
 use Closure;
 
-/*
+/**
  * Liste (List) is a lighweight sequence container(FIFO), as such its elements 
  * are ordered following a linear sequence, a collection of values
  * which may occur more than once.
@@ -38,7 +38,7 @@ use Closure;
  */
 class Liste implements StdInterface
 {
-	/*
+	/**
 	 * Traits.
 	 */
 	use Base, Modifiers, ElementAccess;
@@ -55,7 +55,7 @@ class Liste implements StdInterface
 		return (new Liste)->assign(array_filter($this->container, $predicate));
 	}
 
-	/*
+	/**
 	 * Insert an element with a key. This is not a sorted list. sort() method
      * need to be called to achieve a sorted list.
 	 *
@@ -186,7 +186,7 @@ class Liste implements StdInterface
 		return $comp ? uasort($this->container, $comp) : ksort($this->container);
 	}
 
-	/*
+	/**
 	 * Swap this list with another one.
      *
 	 * @param Liste | another list

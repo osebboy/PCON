@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * PCON: PHP Containers.
  * 
  * Copyright (c) 2011 - 2012, Omercan Sebboy <osebboy@gmail.com>.
@@ -18,7 +18,7 @@ namespace PCON;
 use PCON\Iterators\MultiMapIterator;
 use Closure;
 
-/*
+/**
  * MultiMap is an associative container much like a Map container but allows
  * different elements to have the same key, see example below.
  * 
@@ -55,7 +55,7 @@ use Closure;
  */
 class MultiMap extends Map
 {	
-	/*
+	/**
 	 * Returns the element count for a key.
 	 * 
 	 * <code>
@@ -70,7 +70,7 @@ class MultiMap extends Map
 		return count($this->offsetGet($key));
 	}
 	
-	/*
+	/**
 	 * Iterates over each value associated with $key passing 
 	 * them $predicate, if the $predicate returns true, the current
 	 * value in the container is added to the result.
@@ -107,7 +107,7 @@ class MultiMap extends Map
 		return $filtered;
 	}
 	
-	/*
+	/**
 	 * Iterator.
 	 * 
 	 * @return MultiMapIterator
@@ -125,7 +125,7 @@ class MultiMap extends Map
 		return $it;
 	}
 
-	/*
+	/**
 	 * Searches the multimap with a value and returns the key if found. There might
      * more than one of the same value. This returns the first key found.
 	 *
@@ -164,7 +164,7 @@ class MultiMap extends Map
 		return $this;
 	}
 
-	/*
+	/**
 	 * Get associated values with a key(offset).
 	 * 
 	 * ArrayAcces interface.
@@ -177,7 +177,7 @@ class MultiMap extends Map
 		return isset($this->container[$offset]) ? $this->container[$offset] : array();
 	}
 	
-	/*
+	/**
 	 * Alias of insert(). Unlike Maps, $offset has to be provided for MultiMaps.
 	 * 
 	 * ArrayAccess interface.
@@ -191,7 +191,7 @@ class MultiMap extends Map
 		$this->insert($offset, $value);
 	}
 
-	/*
+	/**
 	 * Removes a value and returns the associated key. 
 	 * 
 	 * @param mixed $key

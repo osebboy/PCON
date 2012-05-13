@@ -37,12 +37,12 @@ use ArrayAccess;
  */
 class Deque implements StdInterface, ArrayAccess
 {
-	/*
+	/**
 	 * Traits. 
 	 */
 	use Base, KeyAccess, Modifiers, ElementAccess;
 
-	/*
+	/**
 	 * Insert an element with a key. The least effective insertion. 
      * Deque is most effective adding and removing elements from its
      * beginning and end. Index has to be an integer and need to 
@@ -67,7 +67,7 @@ class Deque implements StdInterface, ArrayAccess
 		return $this;
 	}
 	
-	/*
+	/**
 	 * Deque implementation.
 	 *
 	 * @param integer $offset
@@ -133,7 +133,7 @@ class Deque implements StdInterface, ArrayAccess
 		return $this;
 	}
 
-	/*
+	/**
 	 * Swap this deque with another.
 	 *
 	 * @param Deque

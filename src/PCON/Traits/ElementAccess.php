@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * PCON: PHP Containers.
  * 
  * Copyright (c) 2011 - 2012, Omercan Sebboy <osebboy@gmail.com>.
@@ -15,7 +15,7 @@
  */
 namespace PCON\Traits;
 
-/*
+/**
  * Trait for the first and last element access in a container.
  * 
  * @author  Omercan Sebboy (www.osebboy.com)
@@ -23,7 +23,7 @@ namespace PCON\Traits;
  */
 trait ElementAccess
 {
-	/*
+	/**
 	 * Get last element.
 	 *
 	 * @return mixed
@@ -33,7 +33,7 @@ trait ElementAccess
 		return end($this->container);
 	}
 
-	/*
+	/**
 	 * Get first element.
 	 *
 	 * @return mixed

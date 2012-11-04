@@ -11,7 +11,7 @@
  * @author     Omercan Sebboy (www.osebboy.com)
  * @copyright  Copyright(c) 2011 - 2012, Omercan Sebboy (osebboy@gmail.com)
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
- * @version    1.1
+ * @version    2.0.beta
  */
 namespace PCON\Tests\Iterators;
 
@@ -22,7 +22,7 @@ use PCON\Iterators\MultiMapIterator;
  * MultiMapIterator Test
  * 
  * @author  Omercan Sebboy (www.osebboy.com)
- * @version 1.1
+ * @version 2.0.beta
  */
 class MultiMapIteratorTest extends \PHPUnit_Framework_TestCase 
 {

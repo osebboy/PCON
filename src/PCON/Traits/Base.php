@@ -11,7 +11,7 @@
  * @author     Omercan Sebboy (www.osebboy.com)
  * @copyright  Copyright(c) 2011 - 2012, Omercan Sebboy (osebboy@gmail.com)
  * @license    http://www.opensource.org/licenses/bsd-license.php  BSD License
- * @version    2.0.alpha
+ * @version    2.0.beta
  */
 namespace PCON\Traits;
 
@@ -58,7 +58,7 @@ use SplFixedArray;
  * overwritten.
  *
  * @author  Omercan Sebboy (www.osebboy.com)
- * @version 2.0.alpha
+ * @version 2.0.beta
  */
 trait Base
 {

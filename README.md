@@ -1,4 +1,4 @@
-<h1>PCON 2.0</h1>
+<h1>PCON 2.0.beta</h1>
 <p>PCON 2.0 is a set of containers for PHP 5.4+.</p>
 
 <h2>Overview</h2>

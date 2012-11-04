@@ -76,13 +76,7 @@ class Map implements StdInterface, ArrayAccess
 	 */
 	public function filter(Closure $predicate)
 	{
-		$map = new Map();
-		
-		foreach ( array_filter($this->container, $predicate) as $k => $v )
-		{
-			$map->insert($k, $v);
-		}
-		return $map;
+		return (new Map())->assign(array_filter($this->container, $predicate));
 	}
 
 	/**

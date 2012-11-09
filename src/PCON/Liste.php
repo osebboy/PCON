@@ -214,13 +214,17 @@ class Liste implements StdInterface
 	{
 		$array = [];
 
-		foreach ( $this->container as $key => $value )
+		$list = new Liste();
+
+		foreach ( $this->container as $value )
 		{
-			if ( !in_array($value, $array, true) )
+			if ( ! in_array($value, $array, true) )
 			{
-				$array[$key] = $value;
+				$list->push_back($value);
 			}
 		}
-		return (new Liste)->assign($array);
+		unset($array);
+
+		return $list;
 	}
 }

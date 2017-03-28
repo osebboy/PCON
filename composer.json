@@ -1,0 +1,24 @@
+{
+  "name": "osebboy/PCON",
+  "description": "PHP Containers",
+  "type": "library",
+  "keywords": [
+    "containers", "collections"
+  ],
+  "license": "BSD-3-Clause",
+  "authors": [
+    {
+      "name": "Omercan Sebboy",
+      "email": "osebboy@gmail.com",
+      "role": "lead"
+    }
+  ],
+  "require": {
+    "php": "^7.1.1"
+  },
+  "autoload": {
+    "classmap": [
+      "src/"
+    ]
+  }
+}
